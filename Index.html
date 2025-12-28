@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tool Management V17 Masterpiece</title>
+    <link href="https://fonts.googleapis.com/css2?family=Kantumruy+Pro:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --secondary-light: #eff6ff;
+            --success: #10b981;
+            --danger: #ef4444;
+            --bg-color: #f8fafc;
+            --text-color: #1f2937;
+            --card-bg: rgba(255, 255, 255, 0.7); /* Translucent for Glassmorphism */
+            --border-color: rgba(255, 255, 255, 0.4);
+            --shadow-light: 0 4px 6px rgba(0, 0, 0, 0.05);
+            --shadow-strong: 0 10px 20px rgba(0, 0, 0, 0.1);
+            --gradient-main: linear-gradient(145deg, #3b82f6, #2563eb);
+        }
+
+        body {
+            font-family: 'Kantumruy Pro', sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            color: var(--text-color);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            overflow-x: hidden;
+        }
+
+        /* AppBar Styling */
+        .app-bar {
+            background: var(--gradient-main);
+            color: white;
+            padding: 35px 20px 70px; /* More padding at bottom for content overlap */
+            text-align: center;
+            border-bottom-left-radius: 40px;
+            border-bottom-right-radius: 40px;
+            box-shadow: var(--shadow-strong);
+            position: relative;
+            z-index: 10;
+        }
+        .app-bar h1 { margin: 0; font-size: 26px; font-weight: 700; }
+        .app-bar p { margin: 5px 0 0; font-size: 15px; opacity: 0.9; }
+
+        .container {
+            padding: 0 15px;
+            margin-top: -50px; /* Overlap with app-bar */
+            position: relative;
+            z-index: 11;
+        }
+
+        /* Glassmorphism Card Base */
+        .glass-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px); /* Glass effect */
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+            border-radius: 25px;
+            padding: 20px;
+            box-shadow: var(--shadow-light);
+            margin-bottom: 20px;
+            transition: transform 0.2s ease-out;
+        }
+        .glass-card:active { transform: translateY(2px); } /* Press effect */
+
+        /* Group Input Section */
+        .input-section {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .input-section input[type="text"] {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            padding: 14px 18px;
+            font-family: inherit;
+            font-size: 16px;
+            color: var(--text-color);
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .input-section input[type="text"]:focus { border-color: var(--primary); }
+        .input-section button {
+            background: var(--secondary-light);
+            border: none;
+            border-radius: 12px;
+            padding: 10px 15px;
+            font-size: 20px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .input-section button:active { background: #dbeafe; }
+
+        /* General Button Styling */
+        .btn {
+            border: none;
+            border-radius: 15px;
+            padding: 16px;
+            font-weight: 600;
+            font-size: 16px;
+            width: 100%;
+            cursor: pointer;
+            transition: background 0.2s ease-in-out, transform 0.1s ease-out;
+            box-shadow: var(--shadow-light);
+        }
+        .btn:active { transform: translateY(1px); box-shadow: none; }
+
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:active { background: #1e40af; }
+
+        /* Group List Items */
+        .group-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px;
+            background: var(--card-bg);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            margin-bottom: 12px;
+            box-shadow: var(--shadow-light);
+            transition: all 0.2s ease-out;
+            border-left: 6px solid var(--primary); /* Accent border */
+            cursor: pointer;
+        }
+        .group-item:active { transform: scale(0.98); }
+
+        .group-item-content { flex: 1; margin-right: 15px; }
+        .group-item-img { width: 60px; height: 60px; border-radius: 15px; object-fit: cover; background: #e0e7ff; margin-right: 15px; }
+        .group-item-name { font-weight: 700; font-size: 18px; }
+        .group-item-desc { font-size: 13px; color: var(--gray-text); opacity: 0.8; }
+        .group-item-arrow { font-size: 20px; color: rgba(0,0,0,0.3); }
+
+        /* Fullscreen Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg-color); /* Use background color for modal */
+            z-index: 1000;
+            animation: slideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow-y: auto;
+        }
+        @keyframes slideIn { from { transform: translateY(100%); } to { transform: translateY(0); } }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px 20px;
+            background: white;
+            border-bottom: 1px solid #f1f5f9;
+            position: sticky;
+            top: 0;
+            z-index: 20;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+        }
+        .modal-header button {
+            background: #e0e7ff;
+            border: none;
+            border-radius: 12px;
+            padding: 10px 15px;
+            font-weight: 600;
+            color: var(--primary);
+            font-size: 16px;
+        }
+        .modal-header .delete-btn { background: none; color: var(--danger); font-size: 24px; padding: 0; }
+
+        /* Modal View Mode (Summary) */
+        .view-section { padding: 15px; }
+        .view-section h3 { color: var(--primary); margin-bottom: 15px; }
+
+        .summary-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(8px);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow-light);
+        }
+        .summary-card h4 {
+            margin-top: 0;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            color: var(--primary);
+        }
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px dashed rgba(0, 0, 0, 0.08);
+            align-items: center;
+        }
+        .summary-item:last-child { border-bottom: none; }
+        .summary-item span:first-child { font-weight: 500; }
+        .summary-item span:last-child { font-weight: 600; color: var(--primary); }
+        .tool-icon { width: 30px; height: 30px; object-fit: cover; border-radius: 5px; margin-right: 8px; }
+
+        .btn-edit-tools { background: #6b7280; color: white; margin-bottom: 15px; }
+        .btn-send { background: var(--success); color: white; box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3); }
+
+        /* Modal Edit Mode (Quantity adjustment) */
+        .edit-section { display: none; padding: 15px; animation: fadeIn 0.4s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .edit-section h4 { color: var(--primary); margin-bottom: 15px; }
+
+        .tool-edit-card {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--card-bg);
+            backdrop-filter: blur(8px);
+            border: 1px solid var(--border-color);
+            border-radius: 18px;
+            padding: 12px 15px;
+            margin-bottom: 10px;
+            box-shadow: var(--shadow-light);
+        }
+
+        .tool-info { display: flex; align-items: center; flex: 1; }
+        .tool-info img { width: 40px; height: 40px; border-radius: 10px; object-fit: cover; background: #e0e7ff; margin-right: 10px; }
+        .tool-name { font-weight: 500; }
+
+        .qty-controls { display: flex; align-items: center; gap: 8px; }
+        .qty-btn {
+            background: white;
+            border: 1px solid rgba(0,0,0,0.1);
+            border-radius: 10px;
+            width: 38px; height: 38px;
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--primary);
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: background 0.1s ease-out, transform 0.1s ease-out;
+        }
+        .qty-btn:active { background: #dbeafe; transform: translateY(1px); }
+        .qty-display { font-size: 18px; font-weight: 600; min-width: 25px; text-align: center; }
+
+        .btn-done-editing { background: var(--primary); color: white; margin-top: 15px; }
+
+        /* Loader */
+        #loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            z-index: 2000;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        .spinner {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid var(--primary);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+<div id="loading-overlay">
+    <div class="spinner"></div>
+    <p style="margin-top: 15px; font-weight: 600; color: var(--primary);">កំពុងបញ្ជូនរបាយការណ៍...</p>
+</div>
+
+<div class="app-bar">
+    <h1>👷 ការដ្ឋានសំណង់</h1>
+    <p>ប្រព័ន្ធគ្រប់គ្រងឧបករណ៍ឆ្លាតវៃ</p>
+</div>
+
+<div class="container">
+    <div class="glass-card">
+        <div class="input-section">
+            <input type="text" id="groupNameInput" placeholder="ឈ្មោះក្រុមកម្មករ...">
+            <button onclick="document.getElementById('groupImageInput').click()">📷</button>
+        </div>
+        <button class="btn btn-primary" onclick="createNewGroup()">+ បង្កើតក្រុមថ្មី</button>
+        <input type="file" id="groupImageInput" style="display:none" accept="image/*" onchange="handleGroupImage(this)">
+    </div>
+
+    <div id="groupList"></div>
+</div>
+
+<div id="toolModal" class="modal">
+    <div class="modal-header">
+        <button onclick="closeToolModal()">⬅️ ថយក្រោយ</button>
+        <h3 id="modalGroupName" style="flex:1; text-align:center; margin:0;"></h3>
+        <button class="delete-btn" onclick="deleteGroup()">🗑️</button>
+    </div>
+
+    <div id="viewSection" class="view-section">
+        <button class="btn btn-edit-tools" onclick="showEditSection()">⚙️ កំណត់ចំនួនឧបករណ៍</button>
+        <div class="summary-card">
+            <h4>📋 បញ្ជីឧបករណ៍ដែលបានដក</h4>
+            <div id="summaryContent"></div>
+            <p id="noSummaryText" style="text-align:center; color:#9ca3af; font-size:14px; margin-top:15px; display:none;">មិនទាន់មានឧបករណ៍ត្រូវបានដកទេ</p>
+        </div>
+        <button class="btn btn-send" onclick="sendReport()">🚀 ផ្ញើរបាយការណ៍ទៅតេឡេក្រាម</button>
+    </div>
+
+    <div id="editSection" class="edit-section">
+        <h4>✏️ កែប្រែចំនួនឧបករណ៍</h4>
+        <div id="editToolsGrid"></div>
+        <input type="file" id="toolImageInput" style="display:none" accept="image/*" onchange="handleToolImage(this)">
+        <button class="btn btn-done-editing" onclick="showViewSection()">✅ រួចរាល់</button>
+    </div>
+</div>
+
+<script>
+    const BOT_TOKEN = "8224268737:AAFhspOb3OozxmKr3INkIPhXdYmDLaJVNB8";
+    const GROUP_CHAT_ID = "-1003387981594";
+    const ADMIN_PRIVATE_ID = "6109968412";
+
+    let appData = JSON.parse(localStorage.getItem('MASTERPIECE_DB_V17')) || [];
+    let currentGroupIndex = null;
+    let tempGroupImage = ""; // For new group image upload
+    let currentToolEditIndex = null; // For tool image upload
+
+    const defaultTools = [
+        { name: "ម៉ូទ័របុកធំ", icon: "🔨", img: "" },
+        { name: "ម៉ូទ័របុកតូច", icon: "⛏️", img: "" },
+        { name: "ម៉ូទ័រកាត់ធំ", icon: "⚙️", img: "" },
+        { name: "ម៉ូទ័រកាត់តូច", icon: "✂️", img: "" },
+        { name: "ដែកត្បែង", icon: "⛓️", img: "" },
+        { name: "តាសេះ", icon: "🐎", img: "" },
+        { name: "ប៉ែល", icon: "🥄", img: "" },
+        { name: "ចប", icon: "⚒️", img: "" },
+        { name: "កាវ", icon: "🧪", img: "" },
+        { name: "រណា", icon: "🪚", img: "" },
+        { name: "រទេះ", icon: "🛒", img: "" }
+    ];
+
+    function handleGroupImage(input) {
+        const reader = new FileReader();
+        reader.onload = (e) => tempGroupImage = e.target.result;
+        reader.readAsDataURL(input.files[0]);
+    }
+
+    function handleToolImage(input) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            if (currentGroupIndex !== null && currentToolEditIndex !== null) {
+                appData[currentGroupIndex].tools[currentToolEditIndex].img = e.target.result;
+                renderEditTools(); // Refresh edit section to show new image
+            }
+        };
+        reader.readAsDataURL(input.files[0]);
+    }
+
+    function createNewGroup() {
+        const groupName = document.getElementById('groupNameInput').value.trim();
+        if (!groupName) return;
+
+        const newTools = JSON.parse(JSON.stringify(defaultTools)); // Deep copy default tools
+        newTools.forEach(tool => tool.qty = 0); // Initialize quantity
+
+        appData.push({
+            name: groupName,
+            img: tempGroupImage || "",
+            tools: newTools
+        });
+        document.getElementById('groupNameInput').value = "";
+        tempGroupImage = "";
+        saveData();
+    }
+
+    function renderGroupList() {
+        let html = '';
+        appData.forEach((group, index) => {
+            html += `
+                <div class="group-item glass-card" onclick="openToolModal(${index})">
+                    <img src="${group.img || 'https://via.placeholder.com/60?text=👷'}" class="group-item-img">
+                    <div class="group-item-content">
+                        <div class="group-item-name">${group.name}</div>
+                        <div class="group-item-desc">ចុចដើម្បីមើល/កែប្រែឧបករណ៍</div>
+                    </div>
+                    <span class="group-item-arrow">❯</span>
+                </div>
+            `;
+        });
+        document.getElementById('groupList').innerHTML = html;
+    }
+
+    function openToolModal(index) {
+        currentGroupIndex = index;
+        document.getElementById('modalGroupName').innerText = appData[index].name;
+        showViewSection(); // Default to view mode
+        document.getElementById('toolModal').style.display = "block";
+    }
+
+    function showViewSection() {
+        document.getElementById('editSection').style.display = "none";
+        document.getElementById('viewSection').style.display = "block";
+        
+        let summaryHtml = '';
+        let hasItems = false;
+        appData[currentGroupIndex].tools.forEach(tool => {
+            if (tool.qty > 0) {
+                summaryHtml += `
+                    <div class="summary-item">
+                        <div style="display:flex; align-items:center;">
+                            ${tool.img ? `<img src="${tool.img}" class="tool-icon">` : ''}
+                            <span>${tool.icon} ${tool.name}</span>
+                        </div>
+                        <span>${tool.qty}</span>
+                    </div>
+                `;
+                hasItems = true;
+            }
+        });
+        document.getElementById('summaryContent').innerHTML = summaryHtml;
+        document.getElementById('noSummaryText').style.display = hasItems ? 'none' : 'block';
+        saveData(); // Save changes when switching back to view mode
+    }
+
+    function showEditSection() {
+        document.getElementById('viewSection').style.display = "none";
+        document.getElementById('editSection').style.display = "block";
+        renderEditTools();
+    }
+
+    function renderEditTools() {
+        let editHtml = '';
+        appData[currentGroupIndex].tools.forEach((tool, toolIndex) => {
+            editHtml += `
+                <div class="tool-edit-card">
+                    <div class="tool-info">
+                        <img src="${tool.img || 'https://via.placeholder.com/40?text=📷'}" 
+                             onclick="currentToolEditIndex=${toolIndex}; document.getElementById('toolImageInput').click();">
+                        <span class="tool-name">${tool.icon} ${tool.name}</span>
+                    </div>
+                    <div class="qty-controls">
+                        <button class="qty-btn" onclick="changeToolQuantity(${toolIndex}, -1)">-</button>
+                        <span class="qty-display">${tool.qty}</span>
+                        <button class="qty-btn" onclick="changeToolQuantity(${toolIndex}, 1)">+</button>
+                    </div>
+                </div>
+            `;
+        });
+        document.getElementById('editToolsGrid').innerHTML = editHtml;
+    }
+
+    function changeToolQuantity(toolIndex, delta) {
+        appData[currentGroupIndex].tools[toolIndex].qty = Math.max(0, appData[currentGroupIndex].tools[toolIndex].qty + delta);
+        renderEditTools(); // Re-render to update display
+    }
+
+    async function sendReport() {
+        const group = appData[currentGroupIndex];
+        let reportMessage = `🏗️ *របាយការណ៍ការដ្ឋានសំណង់*\n\n👷 *ក្រុម:* ${group.name}\n\n*បញ្ជីឧបករណ៍ដែលបានដក:*\n`;
+        let itemsCount = 0;
+        group.tools.forEach(tool => {
+            if (tool.qty > 0) {
+                reportMessage += `${tool.icon} ${tool.name}: *${tool.qty}*\n`;
+                itemsCount++;
+            }
+        });
+
+        if (itemsCount === 0) {
+            alert("សូមបញ្ចូលចំនួនឧបករណ៍យ៉ាងហោចណាស់មួយ!");
+            return;
+        }
+
+        document.getElementById('loading-overlay').style.display = "flex";
+        try {
+            await Promise.all([
+                fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${GROUP_CHAT_ID}&text=${encodeURIComponent(reportMessage)}&parse_mode=Markdown`),
+                fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${ADMIN_PRIVATE_ID}&text=${encodeURIComponent(reportMessage)}&parse_mode=Markdown`)
+            ]);
+            alert("✅ របាយការណ៍ត្រូវបានផ្ញើជោគជ័យ!");
+        } catch (error) {
+            console.error("Error sending report:", error);
+            alert("❌ ការផ្ញើរបាយការណ៍បរាជ័យ! សូមពិនិត្យមើលអ៊ីនធឺណិត ឬការកំណត់ Bot។");
+        } finally {
+            document.getElementById('loading-overlay').style.display = "none";
+        }
+    }
+
+    function deleteGroup() {
+        if (confirm("តើអ្នកប្រាកដថាចង់លុបក្រុមនេះមែនទេ?")) {
+            appData.splice(currentGroupIndex, 1);
+            saveData();
+            closeToolModal();
+        }
+    }
+
+    function saveData() {
+        localStorage.setItem('MASTERPIECE_DB_V17', JSON.stringify(appData));
+        renderGroupList();
+    }
+
+    function closeToolModal() {
+        document.getElementById('toolModal').style.display = "none";
+        currentGroupIndex = null;
+        currentToolEditIndex = null;
+    }
+
+    window.onload = renderGroupList;
+</script>
+</body>
+</html>
