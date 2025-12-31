@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>គ្រប់គ្រងឧបករណ៍ - Fixed Edition</title>
+    <title>គ្រប់គ្រងឧបករណ៍ - Ultimate 3D</title>
     <link href="https://fonts.googleapis.com/css2?family=Kantumruy+Pro:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-database-compat.js"></script>
@@ -12,79 +12,95 @@
         :root {
             --primary: #007aff;
             --digital: #00d2ff;
-            --bg: #f2f5f9;
+            --up: #00c853;
+            --down: #ff3b30;
+            --gold: #ffcc00;
+            --bg: #f2f6fa;
             --shadow-out: 10px 10px 20px #d1d9e6, -10px -10px 20px #ffffff;
             --shadow-in: inset 6px 6px 12px #d1d9e6, inset -6px -6px 12px #ffffff;
         }
 
-        body { font-family: 'Kantumruy Pro', sans-serif; background: var(--bg); margin: 0; color: #2c3e50; }
+        body { font-family: 'Kantumruy Pro', sans-serif; background: var(--bg); margin: 0; color: #2c3e50; overflow-x: hidden; }
         
+        /* Digital Header */
         .header {
             background: rgba(255,255,255,0.85); backdrop-filter: blur(20px);
             padding: 15px 20px; display: flex; justify-content: space-between; align-items: center;
-            position: sticky; top: 0; z-index: 100; border-bottom: 2px solid var(--digital);
-            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            position: sticky; top: 0; z-index: 1000; border-bottom: 3px solid var(--digital);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
         }
 
         .header h1 { font-size: 18px; margin: 0; background: linear-gradient(135deg, var(--primary), var(--digital)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 700; }
+
         .container { padding: 20px; max-width: 500px; margin: 0 auto; }
 
-        /* 3D Interactive Buttons */
+        /* 3D Digital Buttons */
         .btn-3d {
-            padding: 14px 22px; border: none; border-radius: 18px; font-weight: 700;
-            cursor: pointer; font-family: inherit; transition: all 0.2s ease;
-            box-shadow: var(--shadow-out); display: flex; align-items: center; gap: 10px;
+            padding: 12px 18px; border: none; border-radius: 16px; font-weight: 700;
+            cursor: pointer; font-family: inherit; transition: 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: var(--shadow-out); display: flex; align-items: center; justify-content: center; gap: 8px;
         }
 
-        .btn-blue { background: linear-gradient(135deg, var(--primary), var(--digital)); color: white; }
+        .btn-blue { background: linear-gradient(135deg, var(--primary), var(--digital)); color: white; border: 1px solid rgba(255,255,255,0.2); }
         .btn-white { background: white; color: var(--primary); }
-        .btn-3d:active { box-shadow: var(--shadow-in); transform: scale(0.94); }
+        .btn-green { background: linear-gradient(135deg, var(--up), #64dd17); color: white; }
 
-        /* 3D Inputs & Cards */
+        .btn-3d:active { box-shadow: var(--shadow-in); transform: scale(0.95); }
+        .btn-blue:hover { box-shadow: 0 0 15px rgba(0, 210, 255, 0.4); }
+
+        /* 3D Cards & Inputs */
         .card-3d { background: white; border-radius: 28px; padding: 25px; box-shadow: var(--shadow-out); margin-bottom: 25px; border: 1px solid rgba(255,255,255,0.6); }
-        .input-3d { width: 100%; padding: 16px; border: none; border-radius: 15px; background: #f1f5f9; box-shadow: var(--shadow-in); font-family: inherit; font-size: 16px; outline: none; box-sizing: border-box; margin-bottom: 15px; }
+        .input-3d { width: 100%; padding: 16px; border: none; border-radius: 15px; background: #f1f5f9; box-shadow: var(--shadow-in); font-family: inherit; font-size: 16px; outline: none; box-sizing: border-box; margin-bottom: 15px; color: #2c3e50; }
 
-        .group-card { background: white; border-radius: 25px; padding: 18px; display: flex; align-items: center; margin-bottom: 18px; box-shadow: var(--shadow-out); cursor: pointer; transition: 0.3s; }
+        .group-card { background: white; border-radius: 25px; padding: 18px; display: flex; align-items: center; margin-bottom: 18px; box-shadow: var(--shadow-out); cursor: pointer; transition: 0.3s; border: 1px solid transparent; }
+        .group-card:hover { border-color: var(--digital); }
+
         .img-3d { width: 65px; height: 65px; border-radius: 20px; object-fit: cover; border: 4px solid white; box-shadow: 4px 4px 12px rgba(0,0,0,0.1); }
 
-        .summary-row { display: grid; grid-template-columns: 1.5fr 0.8fr 0.8fr 0.8fr; padding: 18px; background: white; border-radius: 22px; margin-bottom: 15px; box-shadow: var(--shadow-out); align-items: center; }
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); z-index: 1000; overflow-y: auto; }
-        #loader { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.95); z-index: 2000; justify-content: center; align-items: center; flex-direction: column; }
+        /* Summary Dashboard Style */
+        .summary-row { display: grid; grid-template-columns: 1.5fr 0.8fr 0.8fr 0.8fr; padding: 18px; background: white; border-radius: 22px; margin-bottom: 15px; box-shadow: var(--shadow-out); align-items: center; border: 1px solid rgba(255,255,255,0.8); }
+
+        /* Modal Settings */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); z-index: 2000; overflow-y: auto; animation: slideIn 0.3s ease-out; }
+        @keyframes slideIn { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+        #loader { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.95); z-index: 9999; justify-content: center; align-items: center; flex-direction: column; }
     </style>
 </head>
 <body>
 
 <div id="loader">
     <div style="border: 5px solid #f3f3f3; border-top: 5px solid var(--primary); border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite;"></div>
-    <b style="margin-top:15px; color:var(--primary);">កំពុងរក្សាទុក...</b>
+    <b style="margin-top:15px; color:var(--primary); letter-spacing: 1px;">កំពុងធ្វើការងារ...</b>
 </div>
 
 <div class="header">
-    <button class="btn-3d btn-white" onclick="openSummary()">📊 សរុប</button>
+    <button class="btn-3d btn-white" onclick="openSummary()">📊 វិភាគសរុប</button>
     <h1>គ្រប់គ្រងឧបករណ៍</h1>
-    <input type="date" id="historyDate" onchange="renderGroups()" style="border:none; background:#ebf0f5; padding:8px; border-radius:12px; font-weight:700; font-family:inherit; box-shadow: var(--shadow-in);">
+    <input type="date" id="historyDate" onchange="renderGroups()" style="border:none; background:#ebf0f5; padding:8px; border-radius:12px; font-weight:700; font-family:inherit; box-shadow: var(--shadow-in); font-size: 11px;">
 </div>
 
 <div class="container">
     <div class="card-3d">
-        <input type="text" id="gName" class="input-3d" placeholder="បញ្ចូលឈ្មោះក្រុមការងារ...">
+        <input type="text" id="gName" class="input-3d" placeholder="ឈ្មោះក្រុមការងារថ្មី...">
         <div style="display: flex; gap: 15px;">
-            <button class="btn-3d btn-white" style="width: 70px;" onclick="document.getElementById('gImgIn').click()">📷</button>
+            <button class="btn-3d btn-white" style="width: 70px; font-size: 20px;" onclick="document.getElementById('gImgIn').click()">📷</button>
             <button class="btn-3d btn-blue" style="flex:1;" onclick="addGroup()">+ បង្កើតក្រុម</button>
         </div>
-        <input type="file" id="gImgIn" style="display:none" onchange="compressImage(this)">
+        <input type="file" id="gImgIn" style="display:none" onchange="compressImage(this)" accept="image/*">
     </div>
+    
     <div id="gList"></div>
 </div>
 
 <div id="mSummary" class="modal">
     <div class="modal-body" style="padding:20px;">
-        <div style="display:flex; justify-content: space-between; margin-bottom: 25px;">
-            <button class="btn-3d btn-white" onclick="closeSummary()">🔙</button>
-            <b style="color:var(--primary); font-size: 18px;">វិភាគទិន្នន័យសរុប</b>
-            <div style="width:50px"></div>
+        <div style="display:flex; justify-content: space-between; margin-bottom: 25px; align-items: center;">
+            <button class="btn-3d btn-white" onclick="closeSummary()">🔙 ថយក្រោយ</button>
+            <button class="btn-3d btn-green" onclick="sendFullSummaryTelegram()">🚀 ផ្ញើ REPORT</button>
         </div>
-        <div style="display: grid; grid-template-columns: 1.5fr 0.8fr 0.8fr 0.8fr; padding: 0 15px; font-size: 11px; opacity: 0.5; margin-bottom: 10px;">
+        
+        <div style="display: grid; grid-template-columns: 1.5fr 0.8fr 0.8fr 0.8fr; padding: 0 15px; font-size: 11px; opacity: 0.5; margin-bottom: 12px; font-weight:700;">
             <span>ឧបករណ៍</span><span>សរុប</span><span>ធៀប</span><span>ខ្ពស់បំផុត</span>
         </div>
         <div id="summaryContent"></div>
@@ -96,23 +112,26 @@
         <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
             <button class="btn-3d btn-white" onclick="closeM()">🔙</button>
             <b id="mTitle" style="color:var(--primary); font-size: 20px;"></b>
-            <button class="btn-3d btn-white" style="color:#ff3b30;" onclick="delG()">🗑️</button>
+            <button class="btn-3d btn-white" style="color:var(--down);" onclick="delG()">🗑️</button>
         </div>
+
         <div id="viewMode">
             <div id="viewList" style="margin-bottom:30px;"></div>
             <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px;">
                 <button class="btn-3d btn-white" onclick="openEdit()">⚙️ កែចំនួន</button>
-                <button class="btn-3d btn-blue" onclick="sendTelegram()">🚀 ផ្ញើ</button>
+                <button class="btn-3d btn-blue" onclick="sendTelegram()">🚀 ផ្ញើក្រុមនេះ</button>
             </div>
         </div>
+
         <div id="editMode" style="display:none;">
             <div id="editGrid"></div>
-            <button class="btn-3d btn-blue" style="width:100%; margin-top:30px; height: 60px;" onclick="saveDaily()">✅ រក្សាទុក</button>
+            <button class="btn-3d btn-blue" style="width:100%; margin-top:30px; height: 60px; font-size: 18px;" onclick="saveDaily()">✅ រក្សាទុកទិន្នន័យ</button>
         </div>
     </div>
 </div>
 
 <script>
+    // --- កំណត់រចនាសម្ព័ន្ធ Firebase ---
     const firebaseConfig = {
       apiKey: "AIzaSyBIDnykmBq9wWb-9isKJiji4TgIBwHQ-ZA",
       authDomain: "toolmanagement-2f44d.firebaseapp.com",
@@ -121,21 +140,28 @@
     };
     firebase.initializeApp(firebaseConfig);
     const rdb = firebase.database();
+    
+    // កាលបរិច្ឆេទ
     const today = new Date().toISOString().split('T')[0];
     document.getElementById('historyDate').value = today;
 
-    let groups = [], allRecords = {}, tempImg = "", curGroupId = null;
+    // អថេររួម
+    let groups = {}, allRecords = {}, tempImg = "", curGroupId = null;
     const toolsMaster = ["ម៉ូទ័របុកធំ", "ម៉ូទ័របុកតូច", "ម៉ូទ័រកាត់ធំ", "ម៉ូទ័រកាត់តូច", "ដែកត្បែង", "តាសេះ", "ប៉ែល", "ចប", "កាវ", "រណា", "រទេះ"];
 
-    // ស្តាប់ទិន្នន័យ Real-time
+    // --- ទាញទិន្នន័យ Real-time ---
     rdb.ref().on('value', snapshot => {
         const data = snapshot.val() || {};
-        groups = data.groups || {}; // ប្រើជា Object ដើម្បីមាន ID ច្បាស់លាស់
+        groups = data.groups || {};
         allRecords = data.daily_records || {};
         renderGroups();
+        
+        // Update Modal បើកំពុងបើក
         if(curGroupId && document.getElementById('mApp').style.display === 'block') renderView();
+        if(document.getElementById('mSummary').style.display === 'block') openSummary();
     });
 
+    // បង្ហាញបញ្ជីក្រុម
     function renderGroups() {
         const selDate = document.getElementById('historyDate').value;
         const dailyData = allRecords[selDate] || {};
@@ -146,31 +172,46 @@
                     <img src="${groups[id].img || 'https://via.placeholder.com/60'}" class="img-3d">
                     <div style="flex:1; margin-left:18px;">
                         <b style="font-size:17px;">${groups[id].name}</b><br>
-                        <span style="font-size:11px; color:${hasData ? '#2e7d32':'#94a3b8'};">
-                            ${hasData ? 'បានកត់ត្រា ✅' : 'មិនទាន់មានទិន្នន័យ'}
+                        <span style="font-size:11px; font-weight:700; color:${hasData ? 'var(--up)':'#94a3b8'};">
+                            ${hasData ? 'បានបញ្ចូលទិន្នន័យ ✅' : 'មិនទាន់មានទិន្នន័យ'}
                         </span>
                     </div>
                     <span style="color:var(--primary); font-weight:800;">❯</span>
                   </div>`;
         }
-        document.getElementById('gList').innerHTML = h || '<p style="text-align:center; opacity:0.3; margin-top:50px;">មិនទាន់មានក្រុម...</p>';
+        document.getElementById('gList').innerHTML = h || '<p style="text-align:center; opacity:0.3; margin-top:50px;">មិនទាន់មានក្រុមនៅឡើយ...</p>';
     }
 
-    function openM(id) { 
-        curGroupId = id; 
-        document.getElementById('mTitle').innerText = groups[id].name; 
-        document.getElementById('mApp').style.display = "block"; 
+    // --- ផ្នែកគ្រប់គ្រងក្រុម (Group Operations) ---
+    function addGroup() {
+        let n = document.getElementById('gName').value;
+        if(n) {
+            const newId = 'G' + Date.now();
+            rdb.ref('groups/' + newId).set({ name: n, img: tempImg });
+            document.getElementById('gName').value = ''; tempImg = '';
+        }
+    }
+
+    function openM(id) {
+        curGroupId = id;
+        document.getElementById('mTitle').innerText = groups[id].name;
+        document.getElementById('mApp').style.display = "block";
         document.getElementById('viewMode').style.display = "block";
         document.getElementById('editMode').style.display = "none";
-        renderView(); 
+        renderView();
     }
 
     function renderView() {
         const selDate = document.getElementById('historyDate').value;
         const data = (allRecords[selDate] && allRecords[selDate][curGroupId]) ? allRecords[selDate][curGroupId] : {};
         let h = '';
-        for(let t in data) { h += `<div class="group-card" style="box-shadow:none; border-bottom:1px solid #eee; border-radius:0; justify-content:space-between;"><span>${t}</span><b style="color:var(--primary); font-size:18px;">x${data[t]}</b></div>`; }
-        document.getElementById('viewList').innerHTML = h || '<p style="text-align:center; padding:20px; opacity:0.3;">គ្មានទិន្នន័យ</p>';
+        for(let t in data) {
+            h += `<div class="group-card" style="box-shadow:none; border-bottom:1px solid #eee; border-radius:0; justify-content:space-between;">
+                    <span style="font-weight:700;">${t}</span>
+                    <b style="color:var(--primary); font-size:18px;">x${data[t]}</b>
+                  </div>`;
+        }
+        document.getElementById('viewList').innerHTML = h || '<p style="text-align:center; padding:30px; opacity:0.3;">គ្មានទិន្នន័យសម្រាប់ថ្ងៃនេះ</p>';
     }
 
     function openEdit() {
@@ -185,7 +226,7 @@
                     <span style="font-weight:700;">${t}</span>
                     <div style="display:flex; gap:15px; align-items:center;">
                         <button class="btn-3d btn-white" style="width:45px; height:45px; padding:0;" onclick="changeQtyLocal('${t}', -1)">-</button>
-                        <b id="eq_${t}" style="min-width:25px; text-align:center; font-size:18px;">${qty}</b>
+                        <b id="eq_${t}" style="min-width:30px; text-align:center; font-size:18px;">${qty}</b>
                         <button class="btn-3d btn-white" style="width:45px; height:45px; padding:0;" onclick="changeQtyLocal('${t}', 1)">+</button>
                     </div>
                   </div>`;
@@ -205,34 +246,13 @@
             let val = parseInt(document.getElementById('eq_'+t).innerText);
             if(val > 0) dataToSave[t] = val;
         });
-        
         document.getElementById('loader').style.display = 'flex';
-        // រក្សាទុកដោយប្រើ curGroupId ជា Key ដាច់ដោយឡែក
         rdb.ref('daily_records/' + selDate + '/' + curGroupId).set(dataToSave).then(() => {
-            setTimeout(() => { 
-                document.getElementById('loader').style.display = 'none'; 
-                document.getElementById('editMode').style.display = "none";
-                document.getElementById('viewMode').style.display = "block";
-            }, 300);
+            setTimeout(() => { document.getElementById('loader').style.display = 'none'; document.getElementById('editMode').style.display = "none"; document.getElementById('viewMode').style.display = "block"; }, 300);
         });
     }
 
-    function addGroup() {
-        let n = document.getElementById('gName').value;
-        if(n) {
-            const newId = 'group_' + Date.now(); // បង្កើត ID ថ្មីមិនឱ្យជាន់គ្នា
-            rdb.ref('groups/' + newId).set({name: n, img: tempImg});
-            document.getElementById('gName').value = ''; tempImg = '';
-        }
-    }
-
-    function delG() {
-        if(confirm("លុបក្រុមនេះ?")) {
-            rdb.ref('groups/' + curGroupId).remove();
-            closeM();
-        }
-    }
-
+    // --- ផ្នែកវិភាគសរុប (Analytics & Telegram) ---
     function openSummary() {
         const selDate = document.getElementById('historyDate').value;
         let d = new Date(selDate); d.setDate(d.getDate() - 1);
@@ -240,10 +260,11 @@
         
         let todayTotals = {}, yestTotals = {}, maxTotals = {};
 
+        // គណនា Real-time
         for (let date in allRecords) {
             let dayTotal = {};
             for (let gId in allRecords[date]) {
-                if(!groups[gId]) continue; // មិនបូកបញ្ចូលក្រុមដែលបានលុប
+                if(!groups[gId]) continue; 
                 for (let t in allRecords[date][gId]) {
                     let qty = allRecords[date][gId][t] || 0;
                     dayTotal[t] = (dayTotal[t] || 0) + qty;
@@ -258,21 +279,57 @@
         toolsMaster.forEach(t => {
             let tCount = todayTotals[t] || 0;
             let diff = tCount - (yestTotals[t] || 0);
-            let diffHtml = diff > 0 ? `<span style="color:#00c853">+${diff}</span>` : diff < 0 ? `<span style="color:#ff3b30">-${Math.abs(diff)}</span>` : `<span style="opacity:0.2">0</span>`;
+            let diffHtml = diff > 0 ? `<span style="color:var(--up); font-weight:700;">+${diff}</span>` : diff < 0 ? `<span style="color:var(--down); font-weight:700;">-${Math.abs(diff)}</span>` : `<span style="opacity:0.2">0</span>`;
+
             h += `<div class="summary-row">
-                    <span style="font-weight:700;">${t}</span>
-                    <span style="color:var(--primary); font-weight:800; text-align:center;">${tCount}</span>
-                    <span style="text-align:center;">${diffHtml}</span>
-                    <span style="color:#ffcc00; font-weight:800; text-align:center;">${maxTotals[t] || 0}</span>
+                    <span style="font-weight:700; font-size:14px;">${t}</span>
+                    <span style="color:var(--primary); font-weight:800; font-size:18px; text-align:center;">${tCount}</span>
+                    <span style="text-align:center; font-size:13px;">${diffHtml}</span>
+                    <span style="color:var(--gold); font-weight:800; text-align:center;">${maxTotals[t] || 0}</span>
                   </div>`;
         });
         document.getElementById('summaryContent').innerHTML = h;
         document.getElementById('mSummary').style.display = 'block';
     }
 
-    function closeM() { document.getElementById('mApp').style.display = "none"; curGroupId = null; }
-    function closeSummary() { document.getElementById('mSummary').style.display = "none"; }
-    
+    async function sendFullSummaryTelegram() {
+        const selDate = document.getElementById('historyDate').value;
+        let msg = `📊 *របាយការណ៍សរុបគ្រឿងចក្រ* (${selDate})\n━━━━━━━━━━━━━━\n`;
+        
+        let d = new Date(selDate); d.setDate(d.getDate() - 1);
+        const yesterday = d.toISOString().split('T')[0];
+        let todayTotals = {}, yestTotals = {}, maxTotals = {};
+
+        for (let date in allRecords) {
+            let dayTotal = {};
+            for (let gId in allRecords[date]) {
+                if(!groups[gId]) continue;
+                for (let t in allRecords[date][gId]) {
+                    let qty = allRecords[date][gId][t] || 0;
+                    dayTotal[t] = (dayTotal[t] || 0) + qty;
+                    if (date === selDate) todayTotals[t] = (todayTotals[t] || 0) + qty;
+                    if (date === yesterday) yestTotals[t] = (yestTotals[t] || 0) + qty;
+                }
+            }
+            for(let t in dayTotal) { if(!maxTotals[t] || dayTotal[t] > maxTotals[t]) maxTotals[t] = dayTotal[t]; }
+        }
+
+        toolsMaster.forEach(t => {
+            let tc = todayTotals[t] || 0;
+            if(tc > 0 || maxTotals[t] > 0) {
+                let diff = tc - (yestTotals[t] || 0);
+                let diffStr = diff > 0 ? `(+${diff} 📈)` : diff < 0 ? `(-${Math.abs(diff)} 📉)` : `(ថេរ)`;
+                msg += `🔹 *${t}*: ${tc} ${diffStr}\n   └ ខ្ពស់បំផុតធ្លាប់ប្រើ: ${maxTotals[t] || 0}\n`;
+            }
+        });
+
+        document.getElementById('loader').style.display = 'flex';
+        await fetch(`https://api.telegram.org/bot8224268737:AAFhspOb3OozxmKr3INkIPhXdYmDLaJVNB8/sendMessage?chat_id=-1003387981594&text=${encodeURIComponent(msg)}&parse_mode=Markdown`);
+        document.getElementById('loader').style.display = 'none';
+        alert("របាយការណ៍សរុបត្រូវបានផ្ញើទៅ Telegram! ✅");
+    }
+
+    // --- មុខងារជំនួយ (Helpers) ---
     function compressImage(input) {
         const reader = new FileReader(); reader.readAsDataURL(input.files[0]);
         reader.onload = e => {
@@ -285,6 +342,10 @@
         }
     }
 
+    function closeM() { document.getElementById('mApp').style.display = "none"; curGroupId = null; }
+    function closeSummary() { document.getElementById('mSummary').style.display = "none"; }
+    function delG() { if(confirm("តើអ្នកប្រាកដថាចង់លុបក្រុមនេះ?")) { rdb.ref('groups/' + curGroupId).remove(); closeM(); } }
+
     async function sendTelegram() {
         const selDate = document.getElementById('historyDate').value;
         const data = (allRecords[selDate] && allRecords[selDate][curGroupId]) ? allRecords[selDate][curGroupId] : {};
@@ -296,6 +357,7 @@
         alert("ផ្ញើរួចរាល់!");
     }
 </script>
+
 <style> @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } } </style>
 </body>
 </html>
