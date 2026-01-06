@@ -3,14 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tool Master Pro - Full Edition</title>
+    <title>គ្រប់គ្រងឧបករណ៍</title>
     <link href="https://fonts.googleapis.com/css2?family=Kantumruy+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-database-compat.js"></script>
-    
-    <!-- Leaflet CSS & JS for OpenStreetMap fallback -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
     <style>
         :root {
@@ -38,7 +34,6 @@
             --radius-md: 16px;
             --radius-lg: 20px;
             --radius-xl: 24px;
-            --map-height: 200px;
         }
 
         * {
@@ -54,12 +49,13 @@
             line-height: 1.6;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
+            padding-bottom: 80px;
         }
 
         .header {
             background: var(--glass);
             backdrop-filter: blur(20px);
-            padding: 18px 20px;
+            padding: 16px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -79,8 +75,8 @@
         .logo-icon {
             font-size: 24px;
             background: linear-gradient(135deg, var(--primary), var(--digital));
-            width: 36px;
-            height: 36px;
+            width: 40px;
+            height: 40px;
             border-radius: 10px;
             display: flex;
             align-items: center;
@@ -106,7 +102,7 @@
         }
 
         .search-input {
-            width: 200px;
+            width: 180px;
             padding: 10px 40px 10px 16px;
             border: none;
             border-radius: var(--radius-sm);
@@ -121,7 +117,7 @@
         .search-input:focus {
             outline: none;
             box-shadow: var(--shadow-out), 0 0 0 3px rgba(0, 122, 255, 0.1);
-            width: 250px;
+            width: 220px;
         }
 
         .search-input::placeholder {
@@ -176,9 +172,9 @@
         .card {
             background: var(--card-bg);
             border-radius: var(--radius-xl);
-            padding: 24px;
+            padding: 20px;
             box-shadow: var(--shadow-md);
-            margin-bottom: 24px;
+            margin-bottom: 16px;
             transition: transform 0.3s, box-shadow 0.3s;
             border: 1px solid rgba(0, 0, 0, 0.03);
         }
@@ -190,7 +186,7 @@
 
         /* Button Styles */
         .btn {
-            padding: 16px 24px;
+            padding: 14px 20px;
             border: none;
             border-radius: var(--radius-lg);
             font-weight: 600;
@@ -271,7 +267,7 @@
         }
 
         .btn-small {
-            padding: 8px 16px;
+            padding: 8px 12px;
             font-size: 14px;
             border-radius: var(--radius-md);
         }
@@ -283,14 +279,14 @@
         /* Input Styles */
         .input-group {
             display: flex;
-            gap: 16px;
-            margin-bottom: 20px;
+            gap: 12px;
+            margin-bottom: 16px;
             align-items: center;
         }
 
         .input-field {
             flex: 1;
-            padding: 16px 20px;
+            padding: 14px 16px;
             border: none;
             border-radius: var(--radius-lg);
             background: var(--bg);
@@ -318,8 +314,8 @@
         }
 
         .image-preview {
-            width: 70px;
-            height: 70px;
+            width: 60px;
+            height: 60px;
             border-radius: var(--radius-lg);
             object-fit: cover;
             border: 3px solid white;
@@ -340,9 +336,9 @@
             background: var(--primary);
             color: white;
             border-radius: 50%;
-            width: 24px;
-            height: 24px;
-            font-size: 14px;
+            width: 20px;
+            height: 20px;
+            font-size: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -353,16 +349,16 @@
         .group-list {
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            gap: 12px;
         }
 
         .group-item {
             background: white;
             border-radius: var(--radius-lg);
-            padding: 18px;
+            padding: 16px;
             display: flex;
             align-items: center;
-            gap: 16px;
+            gap: 12px;
             cursor: pointer;
             transition: all 0.3s;
             box-shadow: var(--shadow-sm);
@@ -403,8 +399,8 @@
         }
 
         .group-image {
-            width: 60px;
-            height: 60px;
+            width: 50px;
+            height: 50px;
             border-radius: var(--radius-md);
             object-fit: cover;
             border: 2px solid white;
@@ -413,6 +409,7 @@
 
         .group-info {
             flex: 1;
+            min-width: 0;
         }
 
         .group-name {
@@ -420,14 +417,17 @@
             font-size: 16px;
             color: var(--text-primary);
             margin-bottom: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .group-status {
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 500;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 4px;
         }
 
         .status-returned {
@@ -444,8 +444,9 @@
 
         .group-arrow {
             color: var(--text-tertiary);
-            font-size: 18px;
+            font-size: 16px;
             transition: transform 0.3s;
+            flex-shrink: 0;
         }
 
         .group-item:hover .group-arrow {
@@ -482,78 +483,99 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 24px;
-            padding-bottom: 16px;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
             border-bottom: 1px solid var(--border);
         }
 
         .modal-title {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: 700;
             color: var(--primary);
             text-align: center;
             flex: 1;
+            padding: 0 10px;
         }
 
         .modal-content {
-            padding: 24px;
+            padding: 20px;
         }
 
-        /* Map Container */
-        .map-container {
-            margin: 20px 0;
+        /* Location Box - ប្រអប់តូចៗ */
+        .location-box {
+            background: var(--bg-light);
             border-radius: var(--radius-lg);
-            overflow: hidden;
-            box-shadow: var(--shadow-sm);
-            height: var(--map-height);
+            padding: 16px;
+            margin: 16px 0;
+            border: 2px solid var(--primary);
             position: relative;
         }
 
-        #map {
-            width: 100%;
-            height: 100%;
-        }
-
-        .leaflet-container {
-            font-family: 'Kantumruy Pro', sans-serif !important;
-        }
-
-        .map-controls {
+        .location-header {
             display: flex;
-            gap: 10px;
-            margin-top: 10px;
-            justify-content: center;
-        }
-
-        .location-input {
-            width: 100%;
-            margin-bottom: 10px;
-        }
-
-        .location-info {
-            background: var(--bg-light);
-            padding: 12px;
-            border-radius: var(--radius-md);
-            margin-top: 10px;
-            font-size: 14px;
-            display: flex;
-            justify-content: space-between;
             align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .location-icon {
+            width: 24px;
+            height: 24px;
+            background: var(--primary);
+            color: white;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+
+        .location-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 15px;
+        }
+
+        .location-content {
+            background: white;
+            border-radius: var(--radius-md);
+            padding: 12px;
+            margin-bottom: 12px;
+        }
+
+        .location-text {
+            font-size: 14px;
+            color: var(--text-primary);
+            line-height: 1.4;
+            word-break: break-word;
+        }
+
+        .location-empty {
+            color: var(--text-tertiary);
+            font-style: italic;
+            text-align: center;
+            padding: 8px;
+        }
+
+        .location-actions {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
         }
 
         /* Tool List */
         .tool-list {
             display: flex;
             flex-direction: column;
-            gap: 12px;
-            margin-bottom: 30px;
+            gap: 10px;
+            margin-bottom: 20px;
         }
 
         .tool-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 16px;
+            padding: 14px;
             background: var(--bg-light);
             border-radius: var(--radius-md);
             border-left: 4px solid var(--primary);
@@ -570,26 +592,27 @@
         .tool-name {
             font-weight: 500;
             color: var(--text-primary);
+            font-size: 14px;
         }
 
         .tool-quantity {
             font-weight: 700;
-            font-size: 18px;
+            font-size: 16px;
             color: var(--primary);
         }
 
         /* Status Indicator */
         .status-indicator {
             text-align: center;
-            padding: 16px;
+            padding: 14px;
             border-radius: var(--radius-lg);
-            margin-bottom: 24px;
+            margin-bottom: 20px;
             font-weight: 600;
-            font-size: 15px;
+            font-size: 14px;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
+            gap: 8px;
         }
 
         .status-returned {
@@ -608,22 +631,22 @@
         .action-buttons {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 16px;
-            margin-bottom: 24px;
+            gap: 12px;
+            margin-bottom: 20px;
         }
 
         /* Edit Mode */
         .edit-grid {
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 16px;
         }
 
         .edit-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 16px;
+            padding: 14px;
             background: white;
             border-radius: var(--radius-lg);
             box-shadow: var(--shadow-sm);
@@ -632,18 +655,18 @@
         .edit-controls {
             display: flex;
             align-items: center;
-            gap: 16px;
+            gap: 12px;
         }
 
         .quantity-btn {
-            width: 40px;
-            height: 40px;
+            width: 36px;
+            height: 36px;
             border-radius: var(--radius-md);
             border: none;
             background: var(--bg);
             color: var(--text-primary);
             font-weight: 700;
-            font-size: 18px;
+            font-size: 16px;
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -659,10 +682,10 @@
         }
 
         .quantity-display {
-            min-width: 40px;
+            min-width: 36px;
             text-align: center;
             font-weight: 700;
-            font-size: 18px;
+            font-size: 16px;
             color: var(--text-primary);
         }
 
@@ -670,13 +693,13 @@
         .summary-list {
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            gap: 12px;
         }
 
         .summary-item {
             display: grid;
             grid-template-columns: 1.5fr 1fr;
-            padding: 18px;
+            padding: 14px;
             background: white;
             border-radius: var(--radius-lg);
             box-shadow: var(--shadow-sm);
@@ -691,7 +714,7 @@
 
         .summary-total {
             font-weight: 700;
-            font-size: 18px;
+            font-size: 16px;
             color: var(--primary);
             text-align: right;
         }
@@ -704,14 +727,14 @@
 
         .search-tabs {
             display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
+            gap: 8px;
+            margin-bottom: 16px;
             border-bottom: 2px solid var(--border);
-            padding-bottom: 10px;
+            padding-bottom: 8px;
         }
 
         .search-tab {
-            padding: 10px 20px;
+            padding: 8px 16px;
             background: none;
             border: none;
             font-weight: 600;
@@ -719,6 +742,7 @@
             cursor: pointer;
             border-radius: var(--radius-sm);
             transition: all 0.3s;
+            font-size: 14px;
         }
 
         .search-tab.active {
@@ -727,23 +751,23 @@
         }
 
         .result-section {
-            margin-bottom: 30px;
+            margin-bottom: 24px;
         }
 
         .result-title {
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 700;
             color: var(--primary);
-            margin-bottom: 15px;
-            padding-bottom: 8px;
+            margin-bottom: 12px;
+            padding-bottom: 6px;
             border-bottom: 2px solid var(--border);
         }
 
         .result-item {
             background: white;
             border-radius: var(--radius-lg);
-            padding: 16px;
-            margin-bottom: 12px;
+            padding: 14px;
+            margin-bottom: 10px;
             box-shadow: var(--shadow-sm);
             cursor: pointer;
             transition: all 0.3s;
@@ -768,48 +792,113 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
 
         .result-name {
             font-weight: 600;
             color: var(--text-primary);
+            font-size: 14px;
         }
 
         .result-count {
             background: var(--primary);
             color: white;
-            padding: 4px 10px;
+            padding: 3px 8px;
             border-radius: var(--radius-sm);
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 600;
         }
 
         .result-details {
-            font-size: 14px;
+            font-size: 12px;
             color: var(--text-secondary);
             display: flex;
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 8px;
         }
 
         .result-detail {
             display: flex;
             align-items: center;
-            gap: 4px;
+            gap: 3px;
         }
 
         /* Empty State */
         .empty-state {
             text-align: center;
-            padding: 40px 20px;
+            padding: 30px 16px;
             color: var(--text-tertiary);
         }
 
         .empty-icon {
-            font-size: 48px;
-            margin-bottom: 16px;
+            font-size: 36px;
+            margin-bottom: 12px;
             opacity: 0.5;
+        }
+
+        /* Location Edit Modal */
+        .location-edit-modal {
+            background: white;
+            border-radius: var(--radius-xl);
+            padding: 20px;
+            box-shadow: var(--shadow-lg);
+            margin: 20px;
+            animation: slideUp 0.3s ease-out;
+        }
+
+        .location-edit-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .location-edit-title {
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 16px;
+        }
+
+        .location-form {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 14px;
+        }
+
+        .form-input {
+            padding: 12px;
+            border: 2px solid var(--border);
+            border-radius: var(--radius-md);
+            font-family: inherit;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.1);
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 16px;
         }
 
         /* Responsive */
@@ -820,7 +909,7 @@
             
             .header {
                 flex-direction: column;
-                gap: 12px;
+                gap: 10px;
                 padding: 12px;
             }
             
@@ -830,15 +919,15 @@
             }
             
             .search-input {
-                width: 150px;
+                width: 140px;
             }
             
             .search-input:focus {
-                width: 180px;
+                width: 160px;
             }
             
             .card {
-                padding: 20px;
+                padding: 16px;
             }
             
             .action-buttons {
@@ -850,12 +939,16 @@
             }
             
             .image-preview {
-                width: 60px;
-                height: 60px;
+                width: 50px;
+                height: 50px;
             }
             
-            .map-container {
-                height: 150px;
+            .modal-content {
+                padding: 16px;
+            }
+            
+            .location-actions {
+                flex-direction: column;
             }
         }
 
@@ -873,12 +966,13 @@
             transform: translateX(-50%);
             background: var(--text-primary);
             color: white;
-            padding: 12px 24px;
+            padding: 10px 20px;
             border-radius: var(--radius-lg);
             font-weight: 500;
             box-shadow: var(--shadow-lg);
             z-index: 3000;
             animation: slideInUp 0.3s, fadeOut 0.3s 2.7s;
+            font-size: 14px;
         }
 
         @keyframes slideInUp {
@@ -896,6 +990,51 @@
             from { opacity: 1; }
             to { opacity: 0; }
         }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border-top: 2px solid var(--primary);
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-around;
+            z-index: 1000;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            background: none;
+            border: none;
+            color: var(--text-tertiary);
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            padding: 8px;
+            border-radius: var(--radius-md);
+        }
+
+        .nav-btn.active {
+            color: var(--primary);
+            background: rgba(0, 122, 255, 0.1);
+        }
+
+        .nav-btn:hover {
+            color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .nav-icon {
+            font-size: 20px;
+        }
     </style>
 </head>
 <body>
@@ -903,7 +1042,7 @@
 <div class="header">
     <div class="logo">
         <div class="logo-icon">🛠️</div>
-        <div class="logo-text">TOOL MASTER PRO</div>
+        <div class="logo-text">គ្រប់គ្រងឧបករណ៍</div>
     </div>
     <div class="header-controls">
         <div class="search-container">
@@ -941,13 +1080,33 @@
     <div id="gList" class="group-list"></div>
 </div>
 
+<!-- Bottom Navigation -->
+<div class="bottom-nav">
+    <button class="nav-btn active" onclick="scrollToTop()">
+        <span class="nav-icon">🏠</span>
+        <span>ទំព័រដើម</span>
+    </button>
+    <button class="nav-btn" onclick="showSummary()">
+        <span class="nav-icon">📊</span>
+        <span>របាយការណ៍</span>
+    </button>
+    <button class="nav-btn" onclick="document.getElementById('gName').focus()">
+        <span class="nav-icon">➕</span>
+        <span>បង្កើត</span>
+    </button>
+    <button class="nav-btn" onclick="refreshAll()">
+        <span class="nav-icon">🔄</span>
+        <span>ផ្ទុកឡើងវិញ</span>
+    </button>
+</div>
+
 <!-- Group Details Modal -->
 <div id="mDetails" class="modal">
     <div class="modal-content">
         <div class="modal-header">
             <button class="btn btn-secondary" onclick="closeM('mDetails')">
                 <span>←</span>
-                <span>ត្រឡប់ក្រោយ</span>
+                <span>ត្រឡប់</span>
             </button>
             <div class="modal-title" id="mTitle"></div>
             <button class="btn btn-danger" onclick="delG()">
@@ -956,27 +1115,25 @@
             </button>
         </div>
 
-        <!-- OpenStreetMap Section -->
-        <div class="map-container">
-            <div id="map"></div>
-        </div>
-        <div class="location-controls">
-            <input type="text" id="locationSearch" class="input-field location-input" placeholder="ស្វែងរកទីតាំង (ឈ្មោះកន្លែង ឬអាសយដ្ឋាន)..." onkeyup="searchLocation(event)">
-            <div id="locationInfo" class="location-info" style="display:none;">
-                <span id="currentLocationText">ទីតាំងបច្ចុប្បន្ន</span>
-                <button class="btn btn-small btn-primary" onclick="shareLocation()">
-                    <span>📍</span>
-                    <span>ចែករំលែក</span>
-                </button>
+        <!-- Location Box -->
+        <div class="location-box">
+            <div class="location-header">
+                <div class="location-icon">📍</div>
+                <div class="location-title">ទីតាំងក្រុម</div>
             </div>
-            <div class="map-controls">
-                <button class="btn btn-small btn-secondary" onclick="getCurrentLocation()">
-                    <span>📍</span>
-                    <span>ទីតាំងបច្ចុប្បន្ន</span>
+            
+            <div class="location-content">
+                <div id="locationDisplay" class="location-empty">មិនទាន់មានទីតាំង</div>
+            </div>
+            
+            <div class="location-actions">
+                <button class="btn btn-small btn-secondary" onclick="editLocation()">
+                    <span>✏️</span>
+                    <span>កែសម្រួល</span>
                 </button>
-                <button class="btn btn-small btn-primary" onclick="saveLocation()">
-                    <span>💾</span>
-                    <span>រក្សាទុក</span>
+                <button class="btn btn-small btn-primary" onclick="shareLocation()">
+                    <span>📤</span>
+                    <span>ចែករំលែក</span>
                 </button>
             </div>
         </div>
@@ -1012,13 +1169,58 @@
     </div>
 </div>
 
+<!-- Location Edit Modal -->
+<div id="mLocationEdit" class="modal" style="display: none;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button class="btn btn-secondary" onclick="closeM('mLocationEdit')">
+                <span>←</span>
+                <span>ត្រឡប់</span>
+            </button>
+            <div class="modal-title">កែសម្រួលទីតាំង</div>
+            <div style="width: 60px;"></div>
+        </div>
+        
+        <div class="location-edit-modal">
+            <div class="location-form">
+                <div class="form-group">
+                    <label class="form-label">ឈ្មោះកន្លែង</label>
+                    <input type="text" id="editLocationName" class="form-input" placeholder="ឧ. ផ្ទះលេខ១២, ផ្លូវ២០០៤">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">កូអរដោនេ (មិនចាំបាច់)</label>
+                    <div style="display: flex; gap: 8px;">
+                        <input type="text" id="editLat" class="form-input" placeholder="រយៈទទឹង" style="flex: 1;">
+                        <input type="text" id="editLng" class="form-input" placeholder="រយៈបណ្តោយ" style="flex: 1;">
+                    </div>
+                    <div style="font-size: 12px; color: var(--text-tertiary); margin-top: 4px;">
+                        បើមិនដឹង គ្រាន់តែបញ្ចូលឈ្មោះកន្លែងគឺគ្រប់គ្រាន់ហើយ
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button class="btn btn-secondary" onclick="getCurrentCoords()" style="flex: 1;">
+                        <span>📍</span>
+                        <span>ទីតាំងបច្ចុប្បន្ន</span>
+                    </button>
+                    <button class="btn btn-primary" onclick="saveLocationEdit()" style="flex: 1;">
+                        <span>💾</span>
+                        <span>រក្សាទុក</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Search Results Modal -->
 <div id="mSearch" class="modal">
     <div class="modal-content">
         <div class="modal-header">
             <button class="btn btn-secondary" onclick="closeM('mSearch')">
                 <span>←</span>
-                <span>ត្រឡប់ក្រោយ</span>
+                <span>ត្រឡប់</span>
             </button>
             <div class="modal-title">លទ្ធផលស្វែងរក</div>
             <button class="btn btn-primary" onclick="exportSearchResults()">
@@ -1031,9 +1233,7 @@
             <button class="search-tab" onclick="switchSearchTab('tools')">ឧបករណ៍</button>
             <button class="search-tab" onclick="switchSearchTab('groups')">ក្រុម</button>
         </div>
-        <div id="searchResults" class="search-results">
-            <!-- Search results will be loaded here -->
-        </div>
+        <div id="searchResults" class="search-results"></div>
     </div>
 </div>
 
@@ -1043,7 +1243,7 @@
         <div class="modal-header">
             <button class="btn btn-secondary" onclick="closeM('mSummary')">
                 <span>←</span>
-                <span>ត្រឡប់ក្រោយ</span>
+                <span>ត្រឡប់</span>
             </button>
             <div class="modal-title">របាយការណ៍សរុប</div>
             <button class="btn btn-primary" onclick="sendFullTelegram()">
@@ -1082,142 +1282,61 @@
     let records = {};
     let curId = null;
     let tempImg = "";
-    let map = null;
-    let marker = null;
     let currentLocation = null;
     let searchTimeout = null;
     
     // Set today's date as default
     document.getElementById('historyDate').value = new Date().toISOString().split('T')[0];
     
-    // Initialize OpenStreetMap
-    function initMap() {
-        try {
-            // Default to Phnom Penh
-            const defaultLocation = [11.5564, 104.9282];
-            
-            // Initialize map
-            map = L.map('map').setView(defaultLocation, 12);
-            
-            // Add OpenStreetMap tiles
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-                maxZoom: 19
-            }).addTo(map);
-            
-            // Add scale control
-            L.control.scale().addTo(map);
-            
-            // Create marker
-            marker = L.marker(defaultLocation, {
-                draggable: true,
-                title: "ទីតាំងក្រុម"
-            }).addTo(map);
-            
-            // Handle marker drag
-            marker.on('dragend', function(event) {
-                const position = marker.getLatLng();
-                currentLocation = {
-                    lat: position.lat,
-                    lng: position.lng
-                };
-                getAddressFromLatLng(position);
-            });
-            
-            // Handle map click
-            map.on('click', function(event) {
-                placeMarker(event.latlng);
-                getAddressFromLatLng(event.latlng);
-            });
-            
-            console.log('OpenStreetMap initialized successfully');
-            
-        } catch (error) {
-            console.error('Map initialization error:', error);
-            showMapError();
-        }
-    }
-    
-    // Show map error
-    function showMapError() {
-        document.getElementById('map').innerHTML = `
-            <div style="height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: var(--bg-light); padding: 20px; text-align: center;">
-                <div style="font-size: 48px; margin-bottom: 16px;">🗺️</div>
-                <div style="font-weight: 600; margin-bottom: 8px; color: var(--text-secondary);">មិនអាចផ្ទុកផែនទីបាន</div>
-                <div style="color: var(--text-tertiary); font-size: 14px;">
-                    <p>សូមពិនិត្យការតភ្ជាប់អ៊ីនធឺណិត</p>
-                </div>
-            </div>
-        `;
-    }
-    
-    // Place marker on map
-    function placeMarker(location) {
-        if (!marker) {
-            marker = L.marker(location, { draggable: true }).addTo(map);
-        } else {
-            marker.setLatLng(location);
-        }
-        map.panTo(location);
-        currentLocation = {
-            lat: location.lat,
-            lng: location.lng
-        };
+    // Load location
+    function loadLocation() {
+        if (!curId) return;
         
-        document.getElementById('locationInfo').style.display = 'flex';
-    }
-    
-    // Get address from lat/lng using OpenStreetMap Nominatim
-    function getAddressFromLatLng(latlng) {
-        fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latlng.lat}&lon=${latlng.lng}&zoom=18&addressdetails=1`)
-            .then(response => response.json())
-            .then(data => {
-                if (data.display_name) {
-                    let address = data.display_name;
-                    // Shorten address if too long
-                    if (address.length > 100) {
-                        address = address.substring(0, 100) + '...';
-                    }
-                    document.getElementById('currentLocationText').textContent = address;
-                } else {
-                    document.getElementById('currentLocationText').textContent = `${latlng.lat.toFixed(6)}, ${latlng.lng.toFixed(6)}`;
+        const locationDisplay = document.getElementById('locationDisplay');
+        const groupRef = rdb.ref('groups/' + curId + '/location');
+        
+        groupRef.once('value', (snapshot) => {
+            const location = snapshot.val();
+            currentLocation = location;
+            
+            if (location) {
+                let displayText = location.name || 'ទីតាំងមិនមានឈ្មោះ';
+                
+                if (location.lat && location.lng) {
+                    displayText += `\n🌐 ${location.lat.toFixed(6)}, ${location.lng.toFixed(6)}`;
                 }
-            })
-            .catch(error => {
-                console.error('Geocoding error:', error);
-                document.getElementById('currentLocationText').textContent = `${latlng.lat.toFixed(6)}, ${latlng.lng.toFixed(6)}`;
-            });
+                
+                locationDisplay.textContent = displayText;
+                locationDisplay.className = 'location-text';
+            } else {
+                locationDisplay.textContent = 'មិនទាន់មានទីតាំង';
+                locationDisplay.className = 'location-empty';
+            }
+        });
     }
     
-    // Search location using OpenStreetMap Nominatim
-    function searchLocation(event) {
-        if (event.key === 'Enter') {
-            const address = document.getElementById('locationSearch').value;
-            if (address.trim() === '') return;
-            
-            showToast('កំពុងស្វែងរកទីតាំង...');
-            
-            fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}&limit=5`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data && data.length > 0) {
-                        const location = L.latLng(data[0].lat, data[0].lon);
-                        placeMarker(location);
-                        map.setZoom(15);
-                        showToast('បានរកឃើញទីតាំង');
-                    } else {
-                        showToast('រកមិនឃើញទីតាំង');
-                    }
-                })
-                .catch(error => {
-                    console.error('Search error:', error);
-                    showToast('មានបញ្ហាក្នុងការស្វែងរកទីតាំង');
-                });
+    // Edit location
+    function editLocation() {
+        if (!curId) return;
+        
+        const locationDisplay = document.getElementById('locationDisplay');
+        const hasLocation = !locationDisplay.classList.contains('location-empty');
+        
+        if (hasLocation && currentLocation) {
+            document.getElementById('editLocationName').value = currentLocation.name || '';
+            document.getElementById('editLat').value = currentLocation.lat || '';
+            document.getElementById('editLng').value = currentLocation.lng || '';
+        } else {
+            document.getElementById('editLocationName').value = '';
+            document.getElementById('editLat').value = '';
+            document.getElementById('editLng').value = '';
         }
+        
+        document.getElementById('mLocationEdit').style.display = 'block';
     }
     
-    // Get current location
-    function getCurrentLocation() {
+    // Get current coordinates
+    function getCurrentCoords() {
         if (!navigator.geolocation) {
             showToast('កម្មវិធីរុករកមិនគាំទ្រទីតាំង');
             return;
@@ -1227,9 +1346,12 @@
         
         navigator.geolocation.getCurrentPosition(
             (position) => {
-                const pos = L.latLng(position.coords.latitude, position.coords.longitude);
-                placeMarker(pos);
-                map.setZoom(15);
+                const lat = position.coords.latitude;
+                const lng = position.coords.longitude;
+                
+                document.getElementById('editLat').value = lat.toFixed(6);
+                document.getElementById('editLng').value = lng.toFixed(6);
+                
                 showToast('បានទាញយកទីតាំងដោយជោគជ័យ');
             },
             (error) => {
@@ -1255,16 +1377,53 @@
         );
     }
     
-    // Save location to Firebase
-    function saveLocation() {
-        if (!curId || !currentLocation) {
-            showToast('សូមជ្រើសរើសទីតាំងមុននឹងរក្សាទុក');
+    // Save location edit
+    function saveLocationEdit() {
+        if (!curId) {
+            showToast('សូមជ្រើសរើសក្រុមមុននឹងរក្សាទុកទីតាំង');
             return;
         }
         
-        rdb.ref('groups/' + curId + '/location').set(currentLocation)
+        const locationName = document.getElementById('editLocationName').value.trim();
+        const latInput = document.getElementById('editLat').value.trim();
+        const lngInput = document.getElementById('editLng').value.trim();
+        
+        if (!locationName) {
+            showToast('សូមបញ្ចូលឈ្មោះកន្លែង');
+            document.getElementById('editLocationName').focus();
+            return;
+        }
+        
+        let locationData = {
+            name: locationName,
+            updatedAt: new Date().toISOString()
+        };
+        
+        if (latInput && lngInput) {
+            const lat = parseFloat(latInput);
+            const lng = parseFloat(lngInput);
+            
+            if (isNaN(lat) || isNaN(lng)) {
+                showToast('កូអរដោនេមិនត្រឹមត្រូវ');
+                return;
+            }
+            
+            if (lat < -90 || lat > 90 || lng < -180 || lng > 180) {
+                showToast('កូអរដោនេមិនត្រឹមត្រូវ');
+                return;
+            }
+            
+            locationData.lat = lat;
+            locationData.lng = lng;
+        }
+        
+        // Save to Firebase
+        rdb.ref('groups/' + curId + '/location').set(locationData)
             .then(() => {
                 showToast('បានរក្សាទុកទីតាំងដោយជោគជ័យ');
+                currentLocation = locationData;
+                loadLocation();
+                closeM('mLocationEdit');
             })
             .catch((error) => {
                 showToast('មានបញ្ហាក្នុងការរក្សាទុកទីតាំង');
@@ -1272,43 +1431,187 @@
             });
     }
     
-    // Share location via Telegram
+    // Share location
     function shareLocation() {
         if (!currentLocation) {
-            showToast('សូមជ្រើសរើសទីតាំងមុននឹងចែករំលែក');
+            showToast('សូមកែសម្រួលទីតាំងមុននឹងចែករំលែក');
             return;
         }
         
         const groupName = groups[curId] ? groups[curId].name : 'ក្រុម';
-        const locationText = document.getElementById('currentLocationText').textContent;
         
-        // Create OpenStreetMap link
-        const mapsUrl = `https://www.openstreetmap.org/?mlat=${currentLocation.lat}&mlon=${currentLocation.lng}&zoom=16`;
+        let message = `📍 *ទីតាំងក្រុម:* ${groupName}\n`;
+        message += `📌 *ទីតាំង:* ${currentLocation.name}\n`;
         
-        const message = `📍 *ទីតាំងក្រុម:* ${groupName}\n` +
-                       `📌 *ទីតាំង:* ${locationText}\n` +
-                       `🗺️ *OpenStreetMap:* ${mapsUrl}\n` +
-                       `📅 *កាលបរិច្ឆេទ:* ${new Date().toLocaleDateString('km-KH')}`;
+        if (currentLocation.lat && currentLocation.lng) {
+            const mapsUrl = `https://www.google.com/maps?q=${currentLocation.lat},${currentLocation.lng}&z=17`;
+            message += `🌐 *កូអរដោនេ:* ${currentLocation.lat.toFixed(6)}, ${currentLocation.lng.toFixed(6)}\n`;
+            message += `🗺️ *Google Maps:* ${mapsUrl}\n`;
+        }
+        
+        message += `📅 *កាលបរិច្ឆេទ:* ${new Date().toLocaleDateString('km-KH')}`;
         
         sendTelegramMessage(message);
     }
     
-    // Load saved location for group
-    function loadGroupLocation() {
-        if (!curId || !groups[curId]) return;
+    // Scroll to top
+    function scrollToTop() {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    
+    // [ទុកមុខងារដើមផ្សេងទៀតដូចតាមកូដដើម]
+    // ... (មុខងារផ្សេងៗដូចតាមកូដដើម)
+    
+    // Firebase Data Listener
+    rdb.ref().on('value', snap => {
+        const data = snap.val() || {};
+        groups = data.groups || {};
+        records = data.daily_records || {};
+        refreshAll();
+    });
+    
+    // Get Effective Data for a Date
+    function getEffectiveData(gid, date) {
+        if (records[date] && records[date][gid]) {
+            return records[date][gid];
+        }
         
-        const groupRef = rdb.ref('groups/' + curId + '/location');
-        groupRef.once('value', (snapshot) => {
-            const location = snapshot.val();
-            if (location) {
-                currentLocation = location;
-                const latLng = L.latLng(location.lat, location.lng);
-                placeMarker(latLng);
-                map.setView(latLng, 15);
-                getAddressFromLatLng(latLng);
-                document.getElementById('locationInfo').style.display = 'flex';
+        let allDates = Object.keys(records).sort().reverse();
+        for (let d of allDates) {
+            if (d < date && records[d][gid]) {
+                if (!records[d][gid].isReturned) {
+                    return records[d][gid];
+                } else {
+                    break;
+                }
             }
-        });
+        }
+        
+        return { items: {}, isReturned: false };
+    }
+    
+    // Refresh All Views
+    function refreshAll() {
+        renderGroups();
+        if (curId) renderDetails();
+    }
+    
+    // Render Groups List
+    function renderGroups() {
+        const date = document.getElementById('historyDate').value;
+        const gList = document.getElementById('gList');
+        
+        if (Object.keys(groups).length === 0) {
+            gList.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-icon">🛠️</div>
+                    <p>មិនទាន់មានក្រុមការងារនៅឡើយ</p>
+                    <p style="font-size: 14px; margin-top: 8px;">សូមបង្កើតក្រុមដំបូងដោយបញ្ចូលឈ្មោះខាងលើ</p>
+                </div>
+            `;
+            return;
+        }
+        
+        let html = '';
+        for (let id in groups) {
+            const data = getEffectiveData(id, date);
+            const hasItems = Object.keys(data.items || {}).length > 0;
+            
+            let statusClass = '';
+            let statusText = '';
+            let statusColor = '';
+            
+            if (data.isReturned) {
+                statusClass = 'returned';
+                statusText = '✅ សងរួចរាល់';
+                statusColor = 'status-returned';
+            } else if (hasItems) {
+                statusClass = 'busy';
+                statusText = '🕒 កំពុងប្រើប្រាស់';
+                statusColor = 'status-busy';
+            } else {
+                statusText = '📭 ទំនេរ';
+                statusColor = 'status-idle';
+            }
+            
+            html += `
+                <div class="group-item ${statusClass}" onclick="openG('${id}')">
+                    <img src="${groups[id].img || 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png'}" 
+                         class="group-image" 
+                         alt="${groups[id].name}">
+                    <div class="group-info">
+                        <div class="group-name">${groups[id].name}</div>
+                        <div class="group-status ${statusColor}">
+                            ${statusText}
+                        </div>
+                    </div>
+                    <div class="group-arrow">→</div>
+                </div>
+            `;
+        }
+        
+        gList.innerHTML = html;
+    }
+    
+    // Open Group Details
+    function openG(id) {
+        curId = id;
+        document.getElementById('mTitle').innerText = groups[id].name;
+        document.getElementById('mDetails').style.display = "block";
+        document.getElementById('viewMode').style.display = "block";
+        document.getElementById('editMode').style.display = "none";
+        
+        loadLocation();
+        renderDetails();
+    }
+    
+    // Render Group Details
+    function renderDetails() {
+        const date = document.getElementById('historyDate').value;
+        const data = getEffectiveData(curId, date);
+        const toolList = document.getElementById('toolList');
+        
+        if (Object.keys(data.items || {}).length === 0) {
+            toolList.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-icon">📦</div>
+                    <p>មិនទាន់មានឧបករណ៍នៅឡើយ</p>
+                    <p style="font-size: 14px; margin-top: 8px;">ចុចប៊ូតុង "កែចំនួន" ដើម្បីបញ្ចូលឧបករណ៍</p>
+                </div>
+            `;
+        } else {
+            let html = '';
+            for (let tool in data.items) {
+                html += `
+                    <div class="tool-item" onclick="searchTool('${tool}')">
+                        <span class="tool-name">${tool}</span>
+                        <span class="tool-quantity">x${data.items[tool]}</span>
+                    </div>
+                `;
+            }
+            toolList.innerHTML = html;
+        }
+        
+        const returnBtn = document.getElementById('returnBtn');
+        const statusTag = document.getElementById('statusTag');
+        
+        if (data.isReturned) {
+            returnBtn.innerHTML = `<span>🔄</span><span>ប្តូរទៅជាមិនទាន់សងវិញ</span>`;
+            returnBtn.className = "btn btn-secondary btn-full";
+            statusTag.innerHTML = `<span>✅</span><span>ក្រុមនេះបានសងឧបករណ៍រួចរាល់</span>`;
+            statusTag.className = "status-indicator status-returned";
+        } else {
+            returnBtn.innerHTML = `<span>📦</span><span>សងឧបករណ៍រួចរាល់</span>`;
+            returnBtn.className = "btn btn-success btn-full";
+            statusTag.innerHTML = `<span>⚠️</span><span>ឧបករណ៍កំពុងស្ថិតក្នុងការប្រើប្រាស់</span>`;
+            statusTag.className = "status-indicator status-busy";
+        }
+    }
+    
+    // Search for a specific tool
+    function searchTool(toolName) {
+        document.getElementById('globalSearch').value = toolName;
+        performSearch(toolName.toLowerCase());
     }
     
     // Global search function
@@ -1454,15 +1757,6 @@
         searchResults.innerHTML = html;
     }
     
-    // Switch search tabs
-    function switchSearchTab(tab) {
-        document.querySelectorAll('.search-tab').forEach(t => t.classList.remove('active'));
-        event.target.classList.add('active');
-        
-        // In a real implementation, you would filter the displayed results
-        // For simplicity, we'll just show all results
-    }
-    
     // View groups using a specific tool
     function viewToolGroups(toolName) {
         const date = document.getElementById('historyDate').value;
@@ -1493,234 +1787,10 @@
         document.getElementById('searchResults').innerHTML = html;
     }
     
-    // Export search results
-    function exportSearchResults() {
-        const searchTerm = document.getElementById('globalSearch').value;
-        const date = document.getElementById('historyDate').value;
-        
-        let message = `🔍 *លទ្ធផលស្វែងរក:* ${searchTerm}\n`;
-        message += `📅 *ថ្ងៃទី:* ${date}\n`;
-        message += `━━━━━━━━━━━━━━\n`;
-        
-        // Get all result items
-        const toolItems = document.querySelectorAll('.result-item.tool');
-        const groupItems = document.querySelectorAll('.result-item.group');
-        
-        if (toolItems.length > 0) {
-            message += `*ឧបករណ៍:*\n`;
-            toolItems.forEach(item => {
-                const toolName = item.querySelector('.result-name').textContent;
-                const total = item.querySelector('.result-count').textContent.replace('សរុប: ', '');
-                message += `• ${toolName}: ${total}\n`;
-            });
-            message += `\n`;
-        }
-        
-        if (groupItems.length > 0) {
-            message += `*ក្រុមការងារ:*\n`;
-            groupItems.forEach(item => {
-                const groupName = item.querySelector('.result-name').textContent;
-                message += `• ${groupName}\n`;
-            });
-        }
-        
-        sendTelegramMessage(message);
-    }
-    
-    // Send Telegram message
-    async function sendTelegramMessage(message) {
-        try {
-            const botToken = '8224268737:AAFhspOb3OozxmKr3INkIPhXdYmDLaJVNB8';
-            const chatId = '-1003387981594';
-            const url = `https://api.telegram.org/bot${botToken}/sendMessage`;
-            
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    chat_id: chatId,
-                    text: message,
-                    parse_mode: 'Markdown'
-                })
-            });
-            
-            if (response.ok) {
-                showToast('បានផ្ញើទិន្នន័យទៅ Telegram ដោយជោគជ័យ');
-            } else {
-                throw new Error('Failed to send');
-            }
-        } catch (error) {
-            showToast('មានបញ្ហាក្នុងការផ្ញើទិន្នន័យ');
-            console.error('Telegram error:', error);
-        }
-    }
-    
-    // Firebase Data Listener
-    rdb.ref().on('value', snap => {
-        const data = snap.val() || {};
-        groups = data.groups || {};
-        records = data.daily_records || {};
-        refreshAll();
-    });
-    
-    // Get Effective Data for a Date
-    function getEffectiveData(gid, date) {
-        // Check if there's data for the selected date
-        if (records[date] && records[date][gid]) {
-            return records[date][gid];
-        }
-        
-        // Look for the most recent previous date with data
-        let allDates = Object.keys(records).sort().reverse();
-        for (let d of allDates) {
-            if (d < date && records[d][gid]) {
-                if (!records[d][gid].isReturned) {
-                    return records[d][gid];
-                } else {
-                    break;
-                }
-            }
-        }
-        
-        // Return empty data if nothing found
-        return { items: {}, isReturned: false };
-    }
-    
-    // Refresh All Views
-    function refreshAll() {
-        renderGroups();
-        if (curId) renderDetails();
-    }
-    
-    // Render Groups List
-    function renderGroups() {
-        const date = document.getElementById('historyDate').value;
-        const gList = document.getElementById('gList');
-        
-        if (Object.keys(groups).length === 0) {
-            gList.innerHTML = `
-                <div class="empty-state">
-                    <div class="empty-icon">🛠️</div>
-                    <p>មិនទាន់មានក្រុមការងារនៅឡើយ</p>
-                    <p style="font-size: 14px; margin-top: 8px;">សូមបង្កើតក្រុមដំបូងដោយបញ្ចូលឈ្មោះខាងលើ</p>
-                </div>
-            `;
-            return;
-        }
-        
-        let html = '';
-        for (let id in groups) {
-            const data = getEffectiveData(id, date);
-            const hasItems = Object.keys(data.items || {}).length > 0;
-            
-            let statusClass = '';
-            let statusText = '';
-            let statusColor = '';
-            
-            if (data.isReturned) {
-                statusClass = 'returned';
-                statusText = '✅ សងរួចរាល់';
-                statusColor = 'status-returned';
-            } else if (hasItems) {
-                statusClass = 'busy';
-                statusText = '🕒 កំពុងប្រើប្រាស់';
-                statusColor = 'status-busy';
-            } else {
-                statusText = '📭 ទំនេរ';
-                statusColor = 'status-idle';
-            }
-            
-            html += `
-                <div class="group-item ${statusClass}" onclick="openG('${id}')">
-                    <img src="${groups[id].img || 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png'}" 
-                         class="group-image" 
-                         alt="${groups[id].name}">
-                    <div class="group-info">
-                        <div class="group-name">${groups[id].name}</div>
-                        <div class="group-status ${statusColor}">
-                            ${statusText}
-                        </div>
-                    </div>
-                    <div class="group-arrow">→</div>
-                </div>
-            `;
-        }
-        
-        gList.innerHTML = html;
-    }
-    
-    // Open Group Details
-    function openG(id) {
-        curId = id;
-        document.getElementById('mTitle').innerText = groups[id].name;
-        document.getElementById('mDetails').style.display = "block";
-        document.getElementById('viewMode').style.display = "block";
-        document.getElementById('editMode').style.display = "none";
-        
-        // Initialize map if not already initialized
-        if (!map) {
-            initMap();
-        }
-        
-        // Load saved location
-        setTimeout(() => {
-            loadGroupLocation();
-        }, 100);
-        
-        renderDetails();
-    }
-    
-    // Render Group Details
-    function renderDetails() {
-        const date = document.getElementById('historyDate').value;
-        const data = getEffectiveData(curId, date);
-        const toolList = document.getElementById('toolList');
-        
-        // Render tools list
-        if (Object.keys(data.items || {}).length === 0) {
-            toolList.innerHTML = `
-                <div class="empty-state">
-                    <div class="empty-icon">📦</div>
-                    <p>មិនទាន់មានឧបករណ៍នៅឡើយ</p>
-                    <p style="font-size: 14px; margin-top: 8px;">ចុចប៊ូតុង "កែចំនួន" ដើម្បីបញ្ចូលឧបករណ៍</p>
-                </div>
-            `;
-        } else {
-            let html = '';
-            for (let tool in data.items) {
-                html += `
-                    <div class="tool-item" onclick="searchTool('${tool}')">
-                        <span class="tool-name">${tool}</span>
-                        <span class="tool-quantity">x${data.items[tool]}</span>
-                    </div>
-                `;
-            }
-            toolList.innerHTML = html;
-        }
-        
-        // Update status and return button
-        const returnBtn = document.getElementById('returnBtn');
-        const statusTag = document.getElementById('statusTag');
-        
-        if (data.isReturned) {
-            returnBtn.innerHTML = `<span>🔄</span><span>ប្តូរទៅជាមិនទាន់សងវិញ</span>`;
-            returnBtn.className = "btn btn-secondary btn-full";
-            statusTag.innerHTML = `<span>✅</span><span>ក្រុមនេះបានសងឧបករណ៍រួចរាល់</span>`;
-            statusTag.className = "status-indicator status-returned";
-        } else {
-            returnBtn.innerHTML = `<span>📦</span><span>សងឧបករណ៍រួចរាល់</span>`;
-            returnBtn.className = "btn btn-success btn-full";
-            statusTag.innerHTML = `<span>⚠️</span><span>ឧបករណ៍កំពុងស្ថិតក្នុងការប្រើប្រាស់</span>`;
-            statusTag.className = "status-indicator status-busy";
-        }
-    }
-    
-    // Search for a specific tool
-    function searchTool(toolName) {
-        document.getElementById('globalSearch').value = toolName;
-        performSearch(toolName.toLowerCase());
+    // Switch search tabs
+    function switchSearchTab(tab) {
+        document.querySelectorAll('.search-tab').forEach(t => t.classList.remove('active'));
+        event.target.classList.add('active');
     }
     
     // Toggle Return Status
@@ -1799,7 +1869,6 @@
         const date = document.getElementById('historyDate').value;
         const totals = {};
         
-        // Calculate totals
         for (let gid in groups) {
             const data = getEffectiveData(gid, date);
             if (!data.isReturned && data.items) {
@@ -1809,7 +1878,6 @@
             }
         }
         
-        // Render summary
         const summaryContent = document.getElementById('summaryContent');
         
         if (Object.keys(totals).length === 0) {
@@ -1855,7 +1923,6 @@
             createdAt: new Date().toISOString()
         });
         
-        // Reset form
         document.getElementById('gName').value = '';
         document.getElementById('tempImgView').src = "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
         tempImg = "";
@@ -1906,9 +1973,13 @@
         
         // Add location if available
         if (currentLocation) {
-            const locationText = document.getElementById('currentLocationText').textContent;
-            const mapsUrl = `https://www.openstreetmap.org/?mlat=${currentLocation.lat}&mlon=${currentLocation.lng}&zoom=16`;
-            message += `\n\n📍 *ទីតាំង៖* ${locationText}\n🗺️ *ផែនទី៖* ${mapsUrl}`;
+            message += `\n\n📍 *ទីតាំង៖* ${currentLocation.name}`;
+            
+            if (currentLocation.lat && currentLocation.lng) {
+                const mapsUrl = `https://www.google.com/maps?q=${currentLocation.lat},${currentLocation.lng}&z=17`;
+                message += `\n🌐 *កូអរដោនេ:* ${currentLocation.lat.toFixed(6)}, ${currentLocation.lng.toFixed(6)}`;
+                message += `\n🗺️ *Google Maps:* ${mapsUrl}`;
+            }
         }
         
         try {
@@ -1944,7 +2015,6 @@
         const date = document.getElementById('historyDate').value;
         const totals = {};
         
-        // Calculate totals
         for (let gid in groups) {
             const data = getEffectiveData(gid, date);
             if (!data.isReturned && data.items) {
@@ -1998,6 +2068,70 @@
         }
     }
     
+    // Export search results
+    function exportSearchResults() {
+        const searchTerm = document.getElementById('globalSearch').value;
+        const date = document.getElementById('historyDate').value;
+        
+        let message = `🔍 *លទ្ធផលស្វែងរក:* ${searchTerm}\n`;
+        message += `📅 *ថ្ងៃទី:* ${date}\n`;
+        message += `━━━━━━━━━━━━━━\n`;
+        
+        // Get all result items
+        const toolItems = document.querySelectorAll('.result-item.tool');
+        const groupItems = document.querySelectorAll('.result-item.group');
+        
+        if (toolItems.length > 0) {
+            message += `*ឧបករណ៍:*\n`;
+            toolItems.forEach(item => {
+                const toolName = item.querySelector('.result-name').textContent;
+                const total = item.querySelector('.result-count').textContent.replace('សរុប: ', '');
+                message += `• ${toolName}: ${total}\n`;
+            });
+            message += `\n`;
+        }
+        
+        if (groupItems.length > 0) {
+            message += `*ក្រុមការងារ:*\n`;
+            groupItems.forEach(item => {
+                const groupName = item.querySelector('.result-name').textContent;
+                message += `• ${groupName}\n`;
+            });
+        }
+        
+        sendTelegramMessage(message);
+    }
+    
+    // Send Telegram message
+    async function sendTelegramMessage(message) {
+        try {
+            const botToken = '8224268737:AAFhspOb3OozxmKr3INkIPhXdYmDLaJVNB8';
+            const chatId = '-1003387981594';
+            const url = `https://api.telegram.org/bot${botToken}/sendMessage`;
+            
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    chat_id: chatId,
+                    text: message,
+                    parse_mode: 'Markdown'
+                })
+            });
+            
+            if (response.ok) {
+                showToast('បានផ្ញើទិន្នន័យទៅ Telegram ដោយជោគជ័យ');
+            } else {
+                throw new Error('Failed to send');
+            }
+        } catch (error) {
+            showToast('មានបញ្ហាក្នុងការផ្ញើទិន្នន័យ');
+            console.error('Telegram error:', error);
+        }
+    }
+    
     // Delete Group
     function delG() {
         if (confirm(`តើអ្នកពិតជាចង់លុបក្រុម "${groups[curId].name}" មែនទេ?`)) {
@@ -2018,19 +2152,16 @@
     
     // Show Toast Notification
     function showToast(message) {
-        // Remove existing toast
         const existingToast = document.querySelector('.toast');
         if (existingToast) {
             existingToast.remove();
         }
         
-        // Create new toast
         const toast = document.createElement('div');
         toast.className = 'toast';
         toast.textContent = message;
         document.body.appendChild(toast);
         
-        // Remove toast after animation
         setTimeout(() => {
             if (toast.parentNode) {
                 toast.parentNode.removeChild(toast);
@@ -2040,20 +2171,10 @@
     
     // Initialize on load
     document.addEventListener('DOMContentLoaded', () => {
-        // Add today's date to date picker
         const today = new Date().toISOString().split('T')[0];
         document.getElementById('historyDate').value = today;
-        
-        // Set max date to today
         document.getElementById('historyDate').max = today;
-        
-        // Focus on group name input
         document.getElementById('gName').focus();
-        
-        // Initialize map
-        setTimeout(() => {
-            initMap();
-        }, 500);
     });
 </script>
 </body>
