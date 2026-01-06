@@ -7,6 +7,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Kantumruy+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-database-compat.js"></script>
+    
+    <!-- Leaflet CSS & JS for OpenStreetMap fallback -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
     <style>
         :root {
@@ -34,6 +38,7 @@
             --radius-md: 16px;
             --radius-lg: 20px;
             --radius-xl: 24px;
+            --map-height: 200px;
         }
 
         * {
@@ -88,6 +93,48 @@
             font-weight: 800;
             color: var(--primary);
             letter-spacing: -0.5px;
+        }
+
+        .header-controls {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .search-container {
+            position: relative;
+        }
+
+        .search-input {
+            width: 200px;
+            padding: 10px 40px 10px 16px;
+            border: none;
+            border-radius: var(--radius-sm);
+            background: white;
+            font-family: inherit;
+            font-size: 14px;
+            color: var(--text-primary);
+            box-shadow: var(--shadow-in);
+            transition: all 0.3s;
+        }
+
+        .search-input:focus {
+            outline: none;
+            box-shadow: var(--shadow-out), 0 0 0 3px rgba(0, 122, 255, 0.1);
+            width: 250px;
+        }
+
+        .search-input::placeholder {
+            color: var(--text-tertiary);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-tertiary);
+            pointer-events: none;
         }
 
         .date-picker {
@@ -221,6 +268,12 @@
         .btn-danger:hover {
             background: linear-gradient(135deg, #e53e3e, var(--down));
             box-shadow: 0 6px 20px rgba(255, 59, 48, 0.4);
+        }
+
+        .btn-small {
+            padding: 8px 16px;
+            font-size: 14px;
+            border-radius: var(--radius-md);
         }
 
         .btn-full {
@@ -446,6 +499,48 @@
             padding: 24px;
         }
 
+        /* Map Container */
+        .map-container {
+            margin: 20px 0;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            height: var(--map-height);
+            position: relative;
+        }
+
+        #map {
+            width: 100%;
+            height: 100%;
+        }
+
+        .leaflet-container {
+            font-family: 'Kantumruy Pro', sans-serif !important;
+        }
+
+        .map-controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+            justify-content: center;
+        }
+
+        .location-input {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .location-info {
+            background: var(--bg-light);
+            padding: 12px;
+            border-radius: var(--radius-md);
+            margin-top: 10px;
+            font-size: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
         /* Tool List */
         .tool-list {
             display: flex;
@@ -463,11 +558,13 @@
             border-radius: var(--radius-md);
             border-left: 4px solid var(--primary);
             transition: all 0.3s;
+            cursor: pointer;
         }
 
         .tool-item:hover {
             background: white;
             box-shadow: var(--shadow-sm);
+            transform: translateX(4px);
         }
 
         .tool-name {
@@ -599,6 +696,109 @@
             text-align: right;
         }
 
+        /* Search Results */
+        .search-results {
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+
+        .search-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 10px;
+        }
+
+        .search-tab {
+            padding: 10px 20px;
+            background: none;
+            border: none;
+            font-weight: 600;
+            color: var(--text-tertiary);
+            cursor: pointer;
+            border-radius: var(--radius-sm);
+            transition: all 0.3s;
+        }
+
+        .search-tab.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .result-section {
+            margin-bottom: 30px;
+        }
+
+        .result-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .result-item {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: var(--shadow-sm);
+            cursor: pointer;
+            transition: all 0.3s;
+            border-left: 4px solid transparent;
+        }
+
+        .result-item:hover {
+            transform: translateX(4px);
+            box-shadow: var(--shadow-md);
+            border-left-color: var(--primary);
+        }
+
+        .result-item.tool {
+            border-left-color: var(--digital);
+        }
+
+        .result-item.group {
+            border-left-color: var(--up);
+        }
+
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .result-name {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .result-count {
+            background: var(--primary);
+            color: white;
+            padding: 4px 10px;
+            border-radius: var(--radius-sm);
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .result-details {
+            font-size: 14px;
+            color: var(--text-secondary);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .result-detail {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
         /* Empty State */
         .empty-state {
             text-align: center;
@@ -618,6 +818,25 @@
                 padding: 16px;
             }
             
+            .header {
+                flex-direction: column;
+                gap: 12px;
+                padding: 12px;
+            }
+            
+            .header-controls {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .search-input {
+                width: 150px;
+            }
+            
+            .search-input:focus {
+                width: 180px;
+            }
+            
             .card {
                 padding: 20px;
             }
@@ -633,6 +852,10 @@
             .image-preview {
                 width: 60px;
                 height: 60px;
+            }
+            
+            .map-container {
+                height: 150px;
             }
         }
 
@@ -682,7 +905,13 @@
         <div class="logo-icon">🛠️</div>
         <div class="logo-text">TOOL MASTER PRO</div>
     </div>
-    <input type="date" id="historyDate" class="date-picker" onchange="refreshAll()">
+    <div class="header-controls">
+        <div class="search-container">
+            <input type="text" id="globalSearch" class="search-input" placeholder="ស្វែងរកឧបករណ៍ ឬក្រុម..." onkeyup="handleGlobalSearch(event)">
+            <span class="search-icon">🔍</span>
+        </div>
+        <input type="date" id="historyDate" class="date-picker" onchange="refreshAll()">
+    </div>
 </div>
 
 <div class="container">
@@ -727,6 +956,31 @@
             </button>
         </div>
 
+        <!-- OpenStreetMap Section -->
+        <div class="map-container">
+            <div id="map"></div>
+        </div>
+        <div class="location-controls">
+            <input type="text" id="locationSearch" class="input-field location-input" placeholder="ស្វែងរកទីតាំង (ឈ្មោះកន្លែង ឬអាសយដ្ឋាន)..." onkeyup="searchLocation(event)">
+            <div id="locationInfo" class="location-info" style="display:none;">
+                <span id="currentLocationText">ទីតាំងបច្ចុប្បន្ន</span>
+                <button class="btn btn-small btn-primary" onclick="shareLocation()">
+                    <span>📍</span>
+                    <span>ចែករំលែក</span>
+                </button>
+            </div>
+            <div class="map-controls">
+                <button class="btn btn-small btn-secondary" onclick="getCurrentLocation()">
+                    <span>📍</span>
+                    <span>ទីតាំងបច្ចុប្បន្ន</span>
+                </button>
+                <button class="btn btn-small btn-primary" onclick="saveLocation()">
+                    <span>💾</span>
+                    <span>រក្សាទុក</span>
+                </button>
+            </div>
+        </div>
+
         <!-- View Mode -->
         <div id="viewMode">
             <div id="statusTag" class="status-indicator"></div>
@@ -754,6 +1008,31 @@
                 <span>✅</span>
                 <span>រក្សាទុកទិន្នន័យ</span>
             </button>
+        </div>
+    </div>
+</div>
+
+<!-- Search Results Modal -->
+<div id="mSearch" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button class="btn btn-secondary" onclick="closeM('mSearch')">
+                <span>←</span>
+                <span>ត្រឡប់ក្រោយ</span>
+            </button>
+            <div class="modal-title">លទ្ធផលស្វែងរក</div>
+            <button class="btn btn-primary" onclick="exportSearchResults()">
+                <span>📋</span>
+                <span>នាំចេញ</span>
+            </button>
+        </div>
+        <div class="search-tabs">
+            <button class="search-tab active" onclick="switchSearchTab('all')">ទាំងអស់</button>
+            <button class="search-tab" onclick="switchSearchTab('tools')">ឧបករណ៍</button>
+            <button class="search-tab" onclick="switchSearchTab('groups')">ក្រុម</button>
+        </div>
+        <div id="searchResults" class="search-results">
+            <!-- Search results will be loaded here -->
         </div>
     </div>
 </div>
@@ -803,9 +1082,480 @@
     let records = {};
     let curId = null;
     let tempImg = "";
+    let map = null;
+    let marker = null;
+    let currentLocation = null;
+    let searchTimeout = null;
     
     // Set today's date as default
     document.getElementById('historyDate').value = new Date().toISOString().split('T')[0];
+    
+    // Initialize OpenStreetMap
+    function initMap() {
+        try {
+            // Default to Phnom Penh
+            const defaultLocation = [11.5564, 104.9282];
+            
+            // Initialize map
+            map = L.map('map').setView(defaultLocation, 12);
+            
+            // Add OpenStreetMap tiles
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                maxZoom: 19
+            }).addTo(map);
+            
+            // Add scale control
+            L.control.scale().addTo(map);
+            
+            // Create marker
+            marker = L.marker(defaultLocation, {
+                draggable: true,
+                title: "ទីតាំងក្រុម"
+            }).addTo(map);
+            
+            // Handle marker drag
+            marker.on('dragend', function(event) {
+                const position = marker.getLatLng();
+                currentLocation = {
+                    lat: position.lat,
+                    lng: position.lng
+                };
+                getAddressFromLatLng(position);
+            });
+            
+            // Handle map click
+            map.on('click', function(event) {
+                placeMarker(event.latlng);
+                getAddressFromLatLng(event.latlng);
+            });
+            
+            console.log('OpenStreetMap initialized successfully');
+            
+        } catch (error) {
+            console.error('Map initialization error:', error);
+            showMapError();
+        }
+    }
+    
+    // Show map error
+    function showMapError() {
+        document.getElementById('map').innerHTML = `
+            <div style="height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: var(--bg-light); padding: 20px; text-align: center;">
+                <div style="font-size: 48px; margin-bottom: 16px;">🗺️</div>
+                <div style="font-weight: 600; margin-bottom: 8px; color: var(--text-secondary);">មិនអាចផ្ទុកផែនទីបាន</div>
+                <div style="color: var(--text-tertiary); font-size: 14px;">
+                    <p>សូមពិនិត្យការតភ្ជាប់អ៊ីនធឺណិត</p>
+                </div>
+            </div>
+        `;
+    }
+    
+    // Place marker on map
+    function placeMarker(location) {
+        if (!marker) {
+            marker = L.marker(location, { draggable: true }).addTo(map);
+        } else {
+            marker.setLatLng(location);
+        }
+        map.panTo(location);
+        currentLocation = {
+            lat: location.lat,
+            lng: location.lng
+        };
+        
+        document.getElementById('locationInfo').style.display = 'flex';
+    }
+    
+    // Get address from lat/lng using OpenStreetMap Nominatim
+    function getAddressFromLatLng(latlng) {
+        fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latlng.lat}&lon=${latlng.lng}&zoom=18&addressdetails=1`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.display_name) {
+                    let address = data.display_name;
+                    // Shorten address if too long
+                    if (address.length > 100) {
+                        address = address.substring(0, 100) + '...';
+                    }
+                    document.getElementById('currentLocationText').textContent = address;
+                } else {
+                    document.getElementById('currentLocationText').textContent = `${latlng.lat.toFixed(6)}, ${latlng.lng.toFixed(6)}`;
+                }
+            })
+            .catch(error => {
+                console.error('Geocoding error:', error);
+                document.getElementById('currentLocationText').textContent = `${latlng.lat.toFixed(6)}, ${latlng.lng.toFixed(6)}`;
+            });
+    }
+    
+    // Search location using OpenStreetMap Nominatim
+    function searchLocation(event) {
+        if (event.key === 'Enter') {
+            const address = document.getElementById('locationSearch').value;
+            if (address.trim() === '') return;
+            
+            showToast('កំពុងស្វែងរកទីតាំង...');
+            
+            fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}&limit=5`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data && data.length > 0) {
+                        const location = L.latLng(data[0].lat, data[0].lon);
+                        placeMarker(location);
+                        map.setZoom(15);
+                        showToast('បានរកឃើញទីតាំង');
+                    } else {
+                        showToast('រកមិនឃើញទីតាំង');
+                    }
+                })
+                .catch(error => {
+                    console.error('Search error:', error);
+                    showToast('មានបញ្ហាក្នុងការស្វែងរកទីតាំង');
+                });
+        }
+    }
+    
+    // Get current location
+    function getCurrentLocation() {
+        if (!navigator.geolocation) {
+            showToast('កម្មវិធីរុករកមិនគាំទ្រទីតាំង');
+            return;
+        }
+        
+        showToast('កំពុងទាញយកទីតាំង...');
+        
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                const pos = L.latLng(position.coords.latitude, position.coords.longitude);
+                placeMarker(pos);
+                map.setZoom(15);
+                showToast('បានទាញយកទីតាំងដោយជោគជ័យ');
+            },
+            (error) => {
+                let errorMessage = 'មិនអាចទាញយកទីតាំងបច្ចុប្បន្នបាន';
+                switch(error.code) {
+                    case error.PERMISSION_DENIED:
+                        errorMessage = 'សូមអនុញ្ញាតសិទ្ធិទីតាំងពីកម្មវិធីរុករក';
+                        break;
+                    case error.POSITION_UNAVAILABLE:
+                        errorMessage = 'ព័ត៌មានទីតាំងមិនអាចប្រើប្រាស់បាន';
+                        break;
+                    case error.TIMEOUT:
+                        errorMessage = 'ពេលវេលាស្វែងរកទីតាំងអស់ហើយ';
+                        break;
+                }
+                showToast(errorMessage);
+            },
+            {
+                enableHighAccuracy: true,
+                timeout: 10000,
+                maximumAge: 0
+            }
+        );
+    }
+    
+    // Save location to Firebase
+    function saveLocation() {
+        if (!curId || !currentLocation) {
+            showToast('សូមជ្រើសរើសទីតាំងមុននឹងរក្សាទុក');
+            return;
+        }
+        
+        rdb.ref('groups/' + curId + '/location').set(currentLocation)
+            .then(() => {
+                showToast('បានរក្សាទុកទីតាំងដោយជោគជ័យ');
+            })
+            .catch((error) => {
+                showToast('មានបញ្ហាក្នុងការរក្សាទុកទីតាំង');
+                console.error('Save location error:', error);
+            });
+    }
+    
+    // Share location via Telegram
+    function shareLocation() {
+        if (!currentLocation) {
+            showToast('សូមជ្រើសរើសទីតាំងមុននឹងចែករំលែក');
+            return;
+        }
+        
+        const groupName = groups[curId] ? groups[curId].name : 'ក្រុម';
+        const locationText = document.getElementById('currentLocationText').textContent;
+        
+        // Create OpenStreetMap link
+        const mapsUrl = `https://www.openstreetmap.org/?mlat=${currentLocation.lat}&mlon=${currentLocation.lng}&zoom=16`;
+        
+        const message = `📍 *ទីតាំងក្រុម:* ${groupName}\n` +
+                       `📌 *ទីតាំង:* ${locationText}\n` +
+                       `🗺️ *OpenStreetMap:* ${mapsUrl}\n` +
+                       `📅 *កាលបរិច្ឆេទ:* ${new Date().toLocaleDateString('km-KH')}`;
+        
+        sendTelegramMessage(message);
+    }
+    
+    // Load saved location for group
+    function loadGroupLocation() {
+        if (!curId || !groups[curId]) return;
+        
+        const groupRef = rdb.ref('groups/' + curId + '/location');
+        groupRef.once('value', (snapshot) => {
+            const location = snapshot.val();
+            if (location) {
+                currentLocation = location;
+                const latLng = L.latLng(location.lat, location.lng);
+                placeMarker(latLng);
+                map.setView(latLng, 15);
+                getAddressFromLatLng(latLng);
+                document.getElementById('locationInfo').style.display = 'flex';
+            }
+        });
+    }
+    
+    // Global search function
+    function handleGlobalSearch(event) {
+        clearTimeout(searchTimeout);
+        
+        searchTimeout = setTimeout(() => {
+            const searchTerm = document.getElementById('globalSearch').value.trim().toLowerCase();
+            
+            if (searchTerm === '') {
+                closeM('mSearch');
+                return;
+            }
+            
+            performSearch(searchTerm);
+        }, 300);
+    }
+    
+    // Perform search
+    function performSearch(searchTerm) {
+        const date = document.getElementById('historyDate').value;
+        const results = {
+            tools: [],
+            groups: []
+        };
+        
+        // Search for tools
+        const toolResults = {};
+        toolsMaster.forEach(tool => {
+            if (tool.toLowerCase().includes(searchTerm)) {
+                toolResults[tool] = { groups: [], total: 0 };
+            }
+        });
+        
+        // Search through groups
+        Object.keys(groups).forEach(groupId => {
+            const group = groups[groupId];
+            const groupName = group.name.toLowerCase();
+            const data = getEffectiveData(groupId, date);
+            
+            // Check if group name matches
+            if (groupName.includes(searchTerm)) {
+                results.groups.push({
+                    id: groupId,
+                    name: group.name,
+                    status: data.isReturned ? 'returned' : 'busy',
+                    toolCount: Object.keys(data.items || {}).length,
+                    img: group.img
+                });
+            }
+            
+            // Check tools in this group
+            Object.keys(data.items || {}).forEach(tool => {
+                if (tool.toLowerCase().includes(searchTerm)) {
+                    if (!toolResults[tool]) {
+                        toolResults[tool] = { groups: [], total: 0 };
+                    }
+                    toolResults[tool].groups.push({
+                        id: groupId,
+                        name: group.name,
+                        quantity: data.items[tool]
+                    });
+                    toolResults[tool].total += data.items[tool];
+                }
+            });
+        });
+        
+        // Convert tool results to array
+        Object.keys(toolResults).forEach(tool => {
+            if (toolResults[tool].groups.length > 0) {
+                results.tools.push({
+                    name: tool,
+                    groups: toolResults[tool].groups,
+                    total: toolResults[tool].total
+                });
+            }
+        });
+        
+        displaySearchResults(results);
+        document.getElementById('mSearch').style.display = 'block';
+    }
+    
+    // Display search results
+    function displaySearchResults(results) {
+        const searchResults = document.getElementById('searchResults');
+        let html = '';
+        
+        // Display tool results
+        if (results.tools.length > 0) {
+            html += `<div class="result-section">
+                        <div class="result-title">ឧបករណ៍ (${results.tools.length})</div>`;
+            
+            results.tools.forEach(tool => {
+                html += `<div class="result-item tool" onclick="viewToolGroups('${tool.name}')">
+                            <div class="result-header">
+                                <div class="result-name">${tool.name}</div>
+                                <div class="result-count">សរុប: ${tool.total}</div>
+                            </div>
+                            <div class="result-details">
+                                <div class="result-detail">
+                                    <span>👥</span>
+                                    <span>ក្រុម: ${tool.groups.length}</span>
+                                </div>
+                            </div>
+                        </div>`;
+            });
+            
+            html += `</div>`;
+        }
+        
+        // Display group results
+        if (results.groups.length > 0) {
+            html += `<div class="result-section">
+                        <div class="result-title">ក្រុមការងារ (${results.groups.length})</div>`;
+            
+            results.groups.forEach(group => {
+                html += `<div class="result-item group" onclick="openG('${group.id}')">
+                            <div class="result-header">
+                                <div class="result-name">${group.name}</div>
+                                <div class="result-count">${group.status === 'returned' ? '✅' : '🕒'}</div>
+                            </div>
+                            <div class="result-details">
+                                <div class="result-detail">
+                                    <span>🛠️</span>
+                                    <span>ឧបករណ៍: ${group.toolCount}</span>
+                                </div>
+                            </div>
+                        </div>`;
+            });
+            
+            html += `</div>`;
+        }
+        
+        // No results
+        if (results.tools.length === 0 && results.groups.length === 0) {
+            html = `<div class="empty-state">
+                        <div class="empty-icon">🔍</div>
+                        <p>រកមិនឃើញលទ្ធផលសម្រាប់ការស្វែងរក</p>
+                        <p style="font-size: 14px; margin-top: 8px;">សូមព្យាយាមស្វែងរកពាក្យផ្សេងទៀត</p>
+                    </div>`;
+        }
+        
+        searchResults.innerHTML = html;
+    }
+    
+    // Switch search tabs
+    function switchSearchTab(tab) {
+        document.querySelectorAll('.search-tab').forEach(t => t.classList.remove('active'));
+        event.target.classList.add('active');
+        
+        // In a real implementation, you would filter the displayed results
+        // For simplicity, we'll just show all results
+    }
+    
+    // View groups using a specific tool
+    function viewToolGroups(toolName) {
+        const date = document.getElementById('historyDate').value;
+        let html = `<div class="result-section">
+                        <div class="result-title">ក្រុមដែលប្រើ "${toolName}"</div>`;
+        
+        Object.keys(groups).forEach(groupId => {
+            const group = groups[groupId];
+            const data = getEffectiveData(groupId, date);
+            
+            if (data.items && data.items[toolName] > 0) {
+                html += `<div class="result-item group" onclick="openG('${groupId}')">
+                            <div class="result-header">
+                                <div class="result-name">${group.name}</div>
+                                <div class="result-count">x${data.items[toolName]}</div>
+                            </div>
+                            <div class="result-details">
+                                <div class="result-detail">
+                                    <span>📅</span>
+                                    <span>ស្ថានភាព: ${data.isReturned ? 'សងរួច' : 'កំពុងប្រើ'}</span>
+                                </div>
+                            </div>
+                        </div>`;
+            }
+        });
+        
+        html += `</div>`;
+        document.getElementById('searchResults').innerHTML = html;
+    }
+    
+    // Export search results
+    function exportSearchResults() {
+        const searchTerm = document.getElementById('globalSearch').value;
+        const date = document.getElementById('historyDate').value;
+        
+        let message = `🔍 *លទ្ធផលស្វែងរក:* ${searchTerm}\n`;
+        message += `📅 *ថ្ងៃទី:* ${date}\n`;
+        message += `━━━━━━━━━━━━━━\n`;
+        
+        // Get all result items
+        const toolItems = document.querySelectorAll('.result-item.tool');
+        const groupItems = document.querySelectorAll('.result-item.group');
+        
+        if (toolItems.length > 0) {
+            message += `*ឧបករណ៍:*\n`;
+            toolItems.forEach(item => {
+                const toolName = item.querySelector('.result-name').textContent;
+                const total = item.querySelector('.result-count').textContent.replace('សរុប: ', '');
+                message += `• ${toolName}: ${total}\n`;
+            });
+            message += `\n`;
+        }
+        
+        if (groupItems.length > 0) {
+            message += `*ក្រុមការងារ:*\n`;
+            groupItems.forEach(item => {
+                const groupName = item.querySelector('.result-name').textContent;
+                message += `• ${groupName}\n`;
+            });
+        }
+        
+        sendTelegramMessage(message);
+    }
+    
+    // Send Telegram message
+    async function sendTelegramMessage(message) {
+        try {
+            const botToken = '8224268737:AAFhspOb3OozxmKr3INkIPhXdYmDLaJVNB8';
+            const chatId = '-1003387981594';
+            const url = `https://api.telegram.org/bot${botToken}/sendMessage`;
+            
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    chat_id: chatId,
+                    text: message,
+                    parse_mode: 'Markdown'
+                })
+            });
+            
+            if (response.ok) {
+                showToast('បានផ្ញើទិន្នន័យទៅ Telegram ដោយជោគជ័យ');
+            } else {
+                throw new Error('Failed to send');
+            }
+        } catch (error) {
+            showToast('មានបញ្ហាក្នុងការផ្ញើទិន្នន័យ');
+            console.error('Telegram error:', error);
+        }
+    }
     
     // Firebase Data Listener
     rdb.ref().on('value', snap => {
@@ -908,6 +1658,17 @@
         document.getElementById('mDetails').style.display = "block";
         document.getElementById('viewMode').style.display = "block";
         document.getElementById('editMode').style.display = "none";
+        
+        // Initialize map if not already initialized
+        if (!map) {
+            initMap();
+        }
+        
+        // Load saved location
+        setTimeout(() => {
+            loadGroupLocation();
+        }, 100);
+        
         renderDetails();
     }
     
@@ -930,7 +1691,7 @@
             let html = '';
             for (let tool in data.items) {
                 html += `
-                    <div class="tool-item">
+                    <div class="tool-item" onclick="searchTool('${tool}')">
                         <span class="tool-name">${tool}</span>
                         <span class="tool-quantity">x${data.items[tool]}</span>
                     </div>
@@ -954,6 +1715,12 @@
             statusTag.innerHTML = `<span>⚠️</span><span>ឧបករណ៍កំពុងស្ថិតក្នុងការប្រើប្រាស់</span>`;
             statusTag.className = "status-indicator status-busy";
         }
+    }
+    
+    // Search for a specific tool
+    function searchTool(toolName) {
+        document.getElementById('globalSearch').value = toolName;
+        performSearch(toolName.toLowerCase());
     }
     
     // Toggle Return Status
@@ -1137,6 +1904,13 @@
         message += `\n`;
         message += data.isReturned ? `✅ *ស្ថានភាព៖ សងឧបករណ៍រួចរាល់*` : `🕒 *ស្ថានភាព៖ កំពុងប្រើប្រាស់*`;
         
+        // Add location if available
+        if (currentLocation) {
+            const locationText = document.getElementById('currentLocationText').textContent;
+            const mapsUrl = `https://www.openstreetmap.org/?mlat=${currentLocation.lat}&mlon=${currentLocation.lng}&zoom=16`;
+            message += `\n\n📍 *ទីតាំង៖* ${locationText}\n🗺️ *ផែនទី៖* ${mapsUrl}`;
+        }
+        
         try {
             const botToken = '8224268737:AAFhspOb3OozxmKr3INkIPhXdYmDLaJVNB8';
             const chatId = '-1003387981594';
@@ -1238,6 +2012,7 @@
         document.getElementById(modalId).style.display = "none";
         if (modalId === 'mDetails') {
             curId = null;
+            currentLocation = null;
         }
     }
     
@@ -1274,6 +2049,11 @@
         
         // Focus on group name input
         document.getElementById('gName').focus();
+        
+        // Initialize map
+        setTimeout(() => {
+            initMap();
+        }, 500);
     });
 </script>
 </body>
